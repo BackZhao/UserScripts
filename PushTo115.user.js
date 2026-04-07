@@ -34,9 +34,13 @@
 // @run-at       document-end
 // @namespace    https://greasyfork.org/users/1453515
 // @license      MIT
-// @downloadURL https://raw.githubusercontent.com/BackZhao/UserScripts/master/PushTo115.js
-// @updateURL https://raw.githubusercontent.com/BackZhao/UserScripts/master/PushTo115.js
+// @downloadURL https://raw.githubusercontent.com/BackZhao/UserScripts/master/PushTo115.user.js
+// @updateURL https://raw.githubusercontent.com/BackZhao/UserScripts/master/PushTo115.meta.js
 // ==/UserScript==
+
+// 调试信息
+console.log('PushTo115脚本已加载，当前页面:', window.location.href);
+console.log('主机名:', window.location.hostname);
 
 (function() {
     'use strict';
