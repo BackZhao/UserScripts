@@ -34,8 +34,8 @@
 // @run-at       document-end
 // @namespace    https://greasyfork.org/users/1453515
 // @license      MIT
-// @downloadURL https://update.greasyfork.org/scripts/531685/%E4%B8%80%E9%94%AE%E5%A4%8D%E5%88%B6%E7%A3%81%E5%8A%9B%E9%93%BE%E5%92%8C%E6%8E%A8%E9%80%81%E5%88%B0115%E7%A6%BB%E7%BA%BF.user.js
-// @updateURL https://update.greasyfork.org/scripts/531685/%E4%B8%80%E9%94%AE%E5%A4%8D%E5%88%B6%E7%A3%81%E5%8A%9B%E9%93%BE%E5%92%8C%E6%8E%A8%E9%80%81%E5%88%B0115%E7%A6%BB%E7%BA%BF.meta.js
+// @downloadURL https://raw.githubusercontent.com/BackZhao/UserScripts/master/PushTo115.js
+// @updateURL https://raw.githubusercontent.com/BackZhao/UserScripts/master/PushTo115.js
 // ==/UserScript==
 
 (function() {
