@@ -22,6 +22,7 @@
 // @include      *://*wuji.*/*
 // @include      *://*1122*.*/*
 // @include      *://*cld130.*/*
+// @include      *://*xb6v.*/*
 // @grant        GM_setClipboard
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
@@ -71,7 +72,8 @@
             btmulu: GM_getValue('site_btmulu', true),
             cili_family: GM_getValue('site_cili_family', true),
             gying_family: GM_getValue('site_gying_family', true),
-            cilidi: GM_getValue('site_cilidi', true)
+            cilidi: GM_getValue('site_cilidi', true),
+            xb6v: GM_getValue('site_xb6v', true)
         },
         enableFloatingSettingsBtn: GM_getValue('enableFloatingSettingsBtn', true)
     };
@@ -188,6 +190,11 @@
                 { url: 'https://cldcld.cyou' },
                 { url: 'https://cldcld.top' },
                 { url: 'https://cldcld.com' }
+            ]
+        },
+        xb6v: {
+            sites: [
+                { url: 'https://www.xb6v.org' }
             ]
         }
     };
@@ -393,7 +400,8 @@
             { key: 'gying_family', pattern: /(\.gying|\.gyg)\..+/, handler: handleGyingGygSite },
             { key: 'yuhuage', pattern: /yuhuage\..+/, handler: handleYuhuageSite },
             { key: 'longwangbt', pattern: /longwangbt\..+/, handler: handleLongwangbtSite },
-            { key: 'cilidi', pattern: /1122|cld130/, handler: handleCiLiDiSite }
+            { key: 'cilidi', pattern: /1122|cld130/, handler: handleCiLiDiSite },
+            { key: 'xb6v', pattern: /xb6v\..+/, handler: handleXb6vSite }
         ];
         
         const domainKeyMap = {
@@ -2528,6 +2536,7 @@ function handleOfflineResult(result) {
         addSiteTile('BT目录(BTMulu)', 'btmulu', 'site_btmulu');
         addSiteTile('ØMagnet(无极磁链)', 'cili_family', 'site_cili_family');
         addSiteTile('磁力帝', 'cilidi', 'site_cilidi');
+        addSiteTile('xb6v电影', 'xb6v', 'site_xb6v');
 
         secSites.appendChild(siteGrid);
 
@@ -2853,6 +2862,23 @@ function handleOfflineResult(result) {
             const combinedBtn = createCombinedButtons(magnetLink);
             btnContainer.appendChild(combinedBtn);
             titleLink.parentNode.insertBefore(btnContainer, titleLink);
+            return true;
+        });
+    }
+
+    function handleXb6vSite() {
+        // 处理表格中的磁力链接
+        processElements('table a[href^="magnet:"]', (magnetLink) => {
+            const href = magnetLink.getAttribute('href');
+            if (!href || !href.startsWith('magnet:')) return false;
+
+            // 创建按钮容器
+            const btnContainer = createButtonContainer({ marginLeft: '8px' });
+            const combinedBtn = createCombinedButtons(href);
+            btnContainer.appendChild(combinedBtn);
+
+            // 将按钮插入到磁力链接后面
+            magnetLink.parentNode.insertBefore(btnContainer, magnetLink.nextSibling);
             return true;
         });
     }
