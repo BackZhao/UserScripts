@@ -23,6 +23,7 @@
 // @include      *://*1122*.*/*
 // @include      *://*cld130.*/*
 // @include      *://*xb6v.*/*
+// @include      *://*6v520.*/*
 // @grant        GM_setClipboard
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
@@ -77,7 +78,8 @@ console.log('主机名:', window.location.hostname);
             cili_family: GM_getValue('site_cili_family', true),
             gying_family: GM_getValue('site_gying_family', true),
             cilidi: GM_getValue('site_cilidi', true),
-            xb6v: GM_getValue('site_xb6v', true)
+            xb6v: GM_getValue('site_xb6v', true),
+            movie6v520: GM_getValue('site_6v520', true)
         },
         enableFloatingSettingsBtn: GM_getValue('enableFloatingSettingsBtn', true)
     };
@@ -199,6 +201,11 @@ console.log('主机名:', window.location.hostname);
         xb6v: {
             sites: [
                 { url: 'https://www.xb6v.org' }
+            ]
+        },
+        movie6v520: {
+            sites: [-
+                { url: 'https://www.6v520.tv' }
             ]
         }
     };
@@ -405,7 +412,8 @@ console.log('主机名:', window.location.hostname);
             { key: 'yuhuage', pattern: /yuhuage\..+/, handler: handleYuhuageSite },
             { key: 'longwangbt', pattern: /longwangbt\..+/, handler: handleLongwangbtSite },
             { key: 'cilidi', pattern: /1122|cld130/, handler: handleCiLiDiSite },
-            { key: 'xb6v', pattern: /xb6v\..+/, handler: handleXb6vSite }
+            { key: 'xb6v', pattern: /xb6v\..+/, handler: handleXb6vSite },
+            { key: 'movie6v520', pattern: /6v520.*\..+/, handler: handle6v520Site }
         ];
         
         const domainKeyMap = {
@@ -650,8 +658,19 @@ console.log('主机名:', window.location.hostname);
         try {
             let decodedMagnetLink = magnetLink;
             try {
+                // 更好的磁力链接解码：先尝试decodeURIComponent，失败后尝试decodeURI
                 decodedMagnetLink = decodeURIComponent(magnetLink);
-            } catch (e) {}
+            } catch (e) {
+                try {
+                    decodedMagnetLink = decodeURI(magnetLink);
+                } catch (e2) {
+                    // 如果两种解码都失败，使用原始链接
+                    decodedMagnetLink = magnetLink;
+                }
+            }
+
+            // 额外的清理：移除可能的额外空格和不可见字符
+            decodedMagnetLink = decodedMagnetLink.trim();
 
             GM_setClipboard(decodedMagnetLink, 'text');
 
@@ -2541,6 +2560,7 @@ function handleOfflineResult(result) {
         addSiteTile('ØMagnet(无极磁链)', 'cili_family', 'site_cili_family');
         addSiteTile('磁力帝', 'cilidi', 'site_cilidi');
         addSiteTile('xb6v电影', 'xb6v', 'site_xb6v');
+        addSiteTile('6v电影', 'movie6v520', 'site_6v520');
 
         secSites.appendChild(siteGrid);
 
@@ -2878,6 +2898,41 @@ function handleOfflineResult(result) {
 
             // 创建按钮容器
             const btnContainer = createButtonContainer({ marginLeft: '8px' });
+            const combinedBtn = createCombinedButtons(href);
+            btnContainer.appendChild(combinedBtn);
+
+            // 将按钮插入到磁力链接后面
+            magnetLink.parentNode.insertBefore(btnContainer, magnetLink.nextSibling);
+            return true;
+        });
+    }
+
+    function handle6v520Site() {
+        // 6v电影网站磁力链接处理
+        // 磁力链接在 bgcolor="#ffffbb" 的单元格中
+        processElements('td[bgcolor="#ffffbb"] a[href^="magnet:"]', (magnetLink) => {
+            let href = magnetLink.getAttribute('href');
+            if (!href || !href.startsWith('magnet:')) return false;
+
+            // 清理磁力链接：6v网站可能会有HTML编码问题
+            // 替换HTML实体编码
+            href = href.replace(/&amp;/g, '&');
+            href = href.replace(/&lt;/g, '<');
+            href = href.replace(/&gt;/g, '>');
+            href = href.replace(/&quot;/g, '"');
+            href = href.replace(/&#39;/g, "'");
+            
+            // 额外清理：移除可能的额外参数或空格
+            href = href.trim();
+            
+            // 更新链接属性，确保传递的是清理过的链接
+            magnetLink.setAttribute('href', href);
+
+            // 创建按钮容器，与xb6v类似样式
+            const btnContainer = createButtonContainer({ 
+                marginLeft: '10px',
+                verticalAlign: 'middle'
+            });
             const combinedBtn = createCombinedButtons(href);
             btnContainer.appendChild(combinedBtn);
 
