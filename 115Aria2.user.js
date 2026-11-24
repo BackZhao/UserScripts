@@ -21,7 +21,7 @@
 // @run-at       document-end
 // ==/UserScript==
 
-(i=>{const t=document.createElement("style");t.dataset.source="vite-plugin-monkey",t.innerText=i,document.head.appendChild(t)})(".bdp-button{position:absolute;right:200px;z-index:100;text-align:center;color:#fff;cursor:pointer;margin-right:8px}.bdp-button-text{font-size:12px;line-height:1}.bdp-setting{width:100%;font-size:16px;margin-top:12px}.bdp-setting td{height:36px;padding-right:10px;vertical-align:middle}.bdp-setting input{height:26px;vertical-align:middle;font-size:16px;color:#000;border:1px solid #000}.bdp-setting input[type=text]{width:100%}.bdp-setting button{margin-top:20px;width:100%;height:36px}.bdp-row{display:flex;justify-content:space-between}.failList{outline:1px solid red;font-size:12px}.failList>div{overflow:hidden;width:100%;white-space:nowrap;text-overflow:ellipsis}.failList>div:nth-child(2n){background-color:#0003}.bdp-buttons{display:flex}.bdp-buttons-close{flex:2 2 100%}.bdp-toolbar{position:absolute;right:200px;z-index:100;display:flex;align-items:center;gap:6px}.bdp-instance-select{height:28px;font-size:12px;color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.3);border-radius:4px;padding:0 6px;cursor:pointer;max-width:140px}.bdp-instance-select option{color:#333;background:#fff}.aria2-setting{font-size:14px}.aria2-instance-table{width:100%;border-collapse:collapse;font-size:13px}.aria2-instance-table th{text-align:left;padding:6px 8px;background:#f5f5f5;border-bottom:1px solid #ddd;font-weight:600}.aria2-instance-table td{padding:8px;border-bottom:1px solid #eee;vertical-align:middle}.aria2-instance-table tbody tr:hover{background:#fafafa}.aria2-editing td{background:#f0f7ff}.aria2-url-cell{font-family:monospace;font-size:12px;color:#555;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.aria2-status-cell{font-size:12px}.aria2-default-tag{display:inline-block;margin-left:6px;padding:1px 6px;background:#09aaff;color:#fff;border-radius:3px;font-size:10px;vertical-align:middle}.aria2-edit-row td{padding:8px}.aria2-edit-form{width:100%}.aria2-edit-form td{padding:4px 6px;font-size:13px}.aria2-edit-form input[type=text],.aria2-edit-form input[type=number]{width:100%;box-sizing:border-box;height:26px;font-size:13px;border:1px solid #ccc;border-radius:3px}.aria2-btn-sm{height:24px;padding:0 8px;margin-right:4px;font-size:12px;background:#fff;border:1px solid #ccc;border-radius:3px;cursor:pointer}.aria2-btn-sm:hover:not(:disabled){background:#f0f0f0}.aria2-btn-sm:disabled{opacity:.4;cursor:not-allowed}.aria2-btn-sm.aria2-btn-danger{color:#d9534f;border-color:#d9534f}.aria2-btn-sm.aria2-btn-danger:hover:not(:disabled){background:#ffeaea}.tcuLAu{left:80px}");
+(t=>{const i=document.createElement("style");i.dataset.source="vite-plugin-monkey",i.innerText=t,document.head.appendChild(i)})(".bdp-setting{width:100%;font-size:16px;margin-top:12px}.bdp-setting td{height:36px;padding-right:10px;vertical-align:middle}.bdp-setting input{height:26px;vertical-align:middle;font-size:16px;color:#000;border:1px solid #000}.bdp-setting input[type=text]{width:100%}.bdp-setting button{margin-top:20px;width:100%;height:36px}.bdp-row{display:flex;justify-content:space-between}.failList{outline:1px solid red;font-size:12px}.failList>div{overflow:hidden;width:100%;white-space:nowrap;text-overflow:ellipsis}.failList>div:nth-child(2n){background-color:#0003}.bdp-buttons{display:flex}.bdp-buttons-close{flex:2 2 100%}.bdp-toolbar{position:absolute;right:200px;z-index:100;display:inline-flex;align-items:center;gap:6px;height:28px}.bdp-instance-select{height:100%;font-size:12px;color:#fff;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);border-radius:4px;padding:0 6px;cursor:pointer;min-width:110px;max-width:150px;line-height:1}.bdp-instance-select:hover{background:rgba(0,0,0,.7)}.bdp-instance-select option{color:#333;background:#fff}.bdp-button{position:relative;height:100%;margin:0;z-index:inherit;text-align:center;color:#fff;cursor:pointer;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);border-radius:4px;padding:0 10px;font-size:12px;font-family:inherit;line-height:1}.bdp-button:hover{background:rgba(0,0,0,.7)}.bdp-button-text{font-size:12px;line-height:1;font-weight:600;letter-spacing:.5px}.aria2-setting{font-size:14px}.aria2-instance-table{width:100%;border-collapse:collapse;font-size:13px}.aria2-instance-table th{text-align:left;padding:6px 8px;background:#f5f5f5;border-bottom:1px solid #ddd;font-weight:600}.aria2-instance-table td{padding:8px;border-bottom:1px solid #eee;vertical-align:middle}.aria2-instance-table tbody tr:hover{background:#fafafa}.aria2-editing td{background:#f0f7ff}.aria2-url-cell{font-family:monospace;font-size:12px;color:#555;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.aria2-status-cell{font-size:12px}.aria2-default-tag{display:inline-block;margin-left:6px;padding:1px 6px;background:#09aaff;color:#fff;border-radius:3px;font-size:10px;vertical-align:middle}.aria2-edit-row td{padding:8px}.aria2-edit-form{width:100%}.aria2-edit-form td{padding:4px 6px;font-size:13px}.aria2-edit-form input[type=text],.aria2-edit-form input[type=number]{width:100%;box-sizing:border-box;height:26px;font-size:13px;border:1px solid #ccc;border-radius:3px}.aria2-btn-sm{height:24px;padding:0 8px;margin-right:4px;font-size:12px;background:#fff;border:1px solid #ccc;border-radius:3px;cursor:pointer}.aria2-btn-sm:hover:not(:disabled){background:#f0f0f0}.aria2-btn-sm:disabled{opacity:.4;cursor:not-allowed}.aria2-btn-sm.aria2-btn-danger{color:#d9534f;border-color:#d9534f}.aria2-btn-sm.aria2-btn-danger:hover:not(:disabled){background:#ffeaea}.tcuLAu{left:80px}");
 
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -29,7 +29,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-var vite_plugin_monkey_f0f468409aa8c8 = function(exports) {
+var vite_plugin_monkey_68f912ee1fb8f = function(exports) {
   var _a, _b;
   "use strict";
   var n, l$1, u$2, t, o$3, f$1 = {}, e$1 = [], c$1 = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
@@ -481,6 +481,7 @@ var vite_plugin_monkey_f0f468409aa8c8 = function(exports) {
       instances
     };
   };
+  const STORAGE_KEY = "115aria2_config";
   const waitTime = (t2) => {
     t2 = t2 || parseInt(getSetting().interval) || 300;
     return new Promise((r2) => setTimeout(r2, t2));
@@ -571,41 +572,62 @@ var vite_plugin_monkey_f0f468409aa8c8 = function(exports) {
       });
     });
   };
-  const saveSetting = (data) => {
-    const n2 = {};
-    let key;
-    for (key in defaultSetting) {
-      if (Object.prototype.hasOwnProperty.call(defaultSetting, key)) {
-        const element = defaultSetting[key];
-        if (data[key] !== element || key === "customUserAgent") {
-          n2[key] = data[key];
-        }
-      }
+  function dedupeInstances(instances) {
+    const seen = /* @__PURE__ */ new Set();
+    const out = [];
+    for (const inst of instances) {
+      if (seen.has(inst.id))
+        continue;
+      seen.add(inst.id);
+      out.push(inst);
     }
-    u("115aria2_config", JSON.stringify(n2));
+    return out;
+  }
+  const saveSetting = (data) => {
+    var _a2;
+    const merged = {
+      ...defaultSetting,
+      ...data
+    };
+    if (Array.isArray(merged.instances)) {
+      merged.instances = dedupeInstances(merged.instances);
+      if (merged.instances.length === 0) {
+        merged.instances = [...defaultSetting.instances];
+      }
+    } else {
+      merged.instances = [...defaultSetting.instances];
+    }
+    const exists = merged.instances.some((i2) => i2.id === merged.currentInstanceId);
+    if (!exists) {
+      merged.currentInstanceId = ((_a2 = merged.instances.find((i2) => i2.isDefault)) == null ? void 0 : _a2.id) || merged.instances[0].id;
+    }
+    u(STORAGE_KEY, JSON.stringify(merged));
   };
   const getSetting = () => {
     var _a2;
     try {
-      let data = JSON.parse(h("115aria2_config", ""));
+      let data = JSON.parse(h(STORAGE_KEY, ""));
+      if (!data || typeof data !== "object") {
+        return JSON.parse(JSON.stringify(defaultSetting));
+      }
       data = migrateLegacySetting(data);
-      Object.keys(defaultSetting).forEach((o2) => {
-        if (data[o2] == null) {
-          data[o2] = defaultSetting[o2];
-        }
-      });
-      if (((_a2 = data.instances) == null ? void 0 : _a2.length) > 0) {
-        const exists = data.instances.some((i2) => i2.id === data.currentInstanceId);
+      const merged = {
+        ...defaultSetting,
+        ...data
+      };
+      if (Array.isArray(merged.instances)) {
+        merged.instances = dedupeInstances(merged.instances);
+      }
+      if (((_a2 = merged.instances) == null ? void 0 : _a2.length) > 0) {
+        const exists = merged.instances.some((i2) => i2.id === merged.currentInstanceId);
         if (!exists) {
-          const def = data.instances.find((i2) => i2.isDefault) || data.instances[0];
-          data.currentInstanceId = def.id;
+          const def = merged.instances.find((i2) => i2.isDefault) || merged.instances[0];
+          merged.currentInstanceId = def.id;
         }
       }
-      return data;
+      return merged;
     } catch (error) {
-      return {
-        ...defaultSetting
-      };
+      return JSON.parse(JSON.stringify(defaultSetting));
     }
   };
   const getUA = () => {
@@ -634,23 +656,20 @@ var vite_plugin_monkey_f0f468409aa8c8 = function(exports) {
       });
     }
   };
-  const addInstance = (inst) => {
+  const removeInstance = (id) => {
+    var _a2;
     const s2 = getSetting();
-    const instances = [...s2.instances, inst];
+    if (s2.instances.length <= 1)
+      return;
+    const instances = s2.instances.filter((i2) => i2.id !== id);
+    if (!instances.some((i2) => i2.isDefault)) {
+      instances[0].isDefault = true;
+    }
+    const newCurrentId = s2.currentInstanceId === id ? ((_a2 = instances.find((i2) => i2.isDefault)) == null ? void 0 : _a2.id) || instances[0].id : s2.currentInstanceId;
     saveSetting({
       ...s2,
       instances,
-      currentInstanceId: inst.id
-    });
-  };
-  const updateInstance = (inst) => {
-    const s2 = getSetting();
-    const instances = s2.instances.map((i2) => i2.id === inst.id ? {
-      ...inst
-    } : i2);
-    saveSetting({
-      ...s2,
-      instances
+      currentInstanceId: newCurrentId
     });
   };
   const testConnection = async (url, token) => {
@@ -3572,23 +3591,7 @@ var vite_plugin_monkey_f0f468409aa8c8 = function(exports) {
       }));
     };
     const saveInstances = () => {
-      data.instances.forEach((inst) => {
-        const exists = getSetting().instances.some((i2) => i2.id === inst.id);
-        if (exists) {
-          updateInstance(inst);
-        }
-      });
-      const def = data.instances.find((i2) => i2.isDefault);
-      if (def) {
-        updateInstance(def);
-        const s2 = getSetting();
-        if (s2.currentInstanceId !== def.id) {
-          saveSetting({
-            ...s2,
-            currentInstanceId: def.id
-          });
-        }
-      }
+      saveSetting(data);
       setData(getSetting());
     };
     const handleAdd = () => {
@@ -3613,10 +3616,8 @@ var vite_plugin_monkey_f0f468409aa8c8 = function(exports) {
       const s2 = getSetting();
       if (s2.instances.length <= 1)
         return;
-      setData((o2) => ({
-        ...o2,
-        instances: o2.instances.filter((i2) => i2.id !== id)
-      }));
+      removeInstance(id);
+      setData(getSetting());
     };
     const handleSetDefault = (id) => {
       setData((o2) => ({
@@ -3632,28 +3633,7 @@ var vite_plugin_monkey_f0f468409aa8c8 = function(exports) {
         ...data
       };
       newData.interval = newData.interval || "300";
-      newData.instances.forEach((inst) => {
-        const exists = getSetting().instances.some((i2) => i2.id === inst.id);
-        if (exists) {
-          updateInstance(inst);
-        } else {
-          addInstance(inst);
-        }
-      });
-      const def = newData.instances.find((i2) => i2.isDefault);
-      if (def) {
-        const s2 = getSetting();
-        if (s2.currentInstanceId !== def.id) {
-          saveSetting({
-            ...s2,
-            currentInstanceId: def.id
-          });
-        }
-      }
-      saveSetting({
-        ...getSetting(),
-        interval: newData.interval
-      });
+      saveSetting(newData);
       props.onClose();
     };
     const handleTest = q$1(async (inst) => {

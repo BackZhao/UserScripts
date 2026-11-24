@@ -5,8 +5,6 @@ import { Aria2Instance } from './types';
 import {
     getSetting,
     saveSetting,
-    addInstance,
-    updateInstance,
     removeInstance,
     uuid,
     testConnection,
@@ -52,22 +50,8 @@ export const Setting: FunctionComponent<Props> = (props: Props) => {
     };
 
     const saveInstances = () => {
-        data.instances.forEach(inst => {
-            const exists = getSetting().instances.some(i => i.id === inst.id);
-            if (exists) {
-                updateInstance(inst);
-            }
-        });
-        // 切换默认实例
-        const def = data.instances.find(i => i.isDefault);
-        if (def) {
-            updateInstance(def);
-            // 当前实例同步默认
-            const s = getSetting();
-            if (s.currentInstanceId !== def.id) {
-                saveSetting({ ...s, currentInstanceId: def.id });
-            }
-        }
+        // saveSetting 会自动做去重和默认值兜底
+        saveSetting(data as any);
         setData(getSetting());
     };
 
@@ -90,7 +74,8 @@ export const Setting: FunctionComponent<Props> = (props: Props) => {
     const handleDelete = (id: string) => {
         const s = getSetting();
         if (s.instances.length <= 1) return;
-        setData(o => ({ ...o, instances: o.instances.filter(i => i.id !== id) }));
+        removeInstance(id);
+        setData(getSetting());
     };
 
     const handleSetDefault = (id: string) => {
@@ -104,25 +89,8 @@ export const Setting: FunctionComponent<Props> = (props: Props) => {
     const saveAll = () => {
         const newData = { ...data };
         newData.interval = newData.interval || '300';
-        // 保存实例
-        newData.instances.forEach(inst => {
-            const exists = getSetting().instances.some(i => i.id === inst.id);
-            if (exists) {
-                updateInstance(inst);
-            } else {
-                addInstance(inst);
-            }
-        });
-        // 如果指定了默认实例且不同于当前, 切换
-        const def = newData.instances.find(i => i.isDefault);
-        if (def) {
-            const s = getSetting();
-            if (s.currentInstanceId !== def.id) {
-                saveSetting({ ...s, currentInstanceId: def.id });
-            }
-        }
-        // 最后保存全局设置 (包含 currentInstanceId)
-        saveSetting({ ...getSetting(), interval: newData.interval });
+        // saveSetting 会做去重 + 默认值兜底 (包括 isDefault 和 currentInstanceId)
+        saveSetting(newData as any);
         props.onClose();
     };
 

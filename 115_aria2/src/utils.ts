@@ -2,6 +2,8 @@ import { GM_xmlhttpRequest, GM_setValue, GM_getValue } from '$';
 import { defaultSetting, migrateLegacySetting } from './constant';
 import { Aria2Instance, SettingKeyType, SettingType } from './types';
 
+const STORAGE_KEY = '115aria2_config';
+
 export const waitTime = (t?: number) => {
     t = t || parseInt(getSetting().interval) || 300;
     return new Promise(r => setTimeout(r, t));
@@ -15,10 +17,7 @@ export const updateInterval = (t: string) => {
         t2 = 100;
     }
     const t3 = t2.toString();
-    saveSetting({
-        ...getSetting(),
-        interval: t3,
-    });
+    saveSetting({ ...getSetting(), interval: t3 });
 };
 
 export const xhrGet = (url: string, headers?: any) => {
@@ -114,46 +113,72 @@ export const xhrPost = <T2 = unknown>(
 
 export const xhr115 = () => {};
 
-export const saveSetting = (data: SettingType) => {
-    const n: any = {};
-    let key: SettingKeyType;
-    for (key in defaultSetting) {
-        if (Object.prototype.hasOwnProperty.call(defaultSetting, key)) {
-            const element = defaultSetting[key];
-            if (data[key] !== element || key === 'customUserAgent') {
-                n[key] = data[key];
-            }
-        }
+/** 把实例数组做去重 (按 id), 避免重复项 */
+function dedupeInstances(instances: Aria2Instance[]): Aria2Instance[] {
+    const seen = new Set<string>();
+    const out: Aria2Instance[] = [];
+    for (const inst of instances) {
+        if (seen.has(inst.id)) continue;
+        seen.add(inst.id);
+        out.push(inst);
     }
-    GM_setValue('115aria2_config', JSON.stringify(n));
+    return out;
+}
+
+/** 持久化完整设置对象 (不再做差异对比, 避免 instances 数组丢字段) */
+export const saveSetting = (data: SettingType) => {
+    const merged: any = { ...defaultSetting, ...data };
+    // 确保 instances 数组干净: 去重 + 至少保留一个
+    if (Array.isArray(merged.instances)) {
+        merged.instances = dedupeInstances(merged.instances);
+        if (merged.instances.length === 0) {
+            merged.instances = [...defaultSetting.instances];
+        }
+    } else {
+        merged.instances = [...defaultSetting.instances];
+    }
+    // 确保 currentInstanceId 有效
+    const exists = merged.instances.some(
+        (i: Aria2Instance) => i.id === merged.currentInstanceId
+    );
+    if (!exists) {
+        merged.currentInstanceId =
+            merged.instances.find((i: Aria2Instance) => i.isDefault)?.id ||
+            merged.instances[0].id;
+    }
+    GM_setValue(STORAGE_KEY, JSON.stringify(merged));
 };
 
 export const getSetting = (): Required<SettingType> => {
     try {
-        let data: any = JSON.parse(GM_getValue('115aria2_config', ''));
+        let data: any = JSON.parse(GM_getValue(STORAGE_KEY, ''));
+        // 空数据或解析失败 → 返回默认
+        if (!data || typeof data !== 'object') {
+            return JSON.parse(JSON.stringify(defaultSetting)) as Required<SettingType>;
+        }
+        // 旧版本单实例自动迁移
         data = migrateLegacySetting(data);
-        (Object.keys(defaultSetting) as SettingKeyType[]).forEach(
-            (o: SettingKeyType) => {
-                if (data[o] == null) {
-                    data[o] = defaultSetting[o];
-                }
-            }
-        );
+        // 合并默认值 (缺失字段补齐)
+        const merged: any = { ...defaultSetting, ...data };
+        // instances 去重
+        if (Array.isArray(merged.instances)) {
+            merged.instances = dedupeInstances(merged.instances);
+        }
         // 确保 currentInstanceId 有效
-        if (data.instances?.length > 0) {
-            const exists = data.instances.some(
-                (i: Aria2Instance) => i.id === data.currentInstanceId
+        if (merged.instances?.length > 0) {
+            const exists = merged.instances.some(
+                (i: Aria2Instance) => i.id === merged.currentInstanceId
             );
             if (!exists) {
                 const def =
-                    data.instances.find((i: Aria2Instance) => i.isDefault) ||
-                    data.instances[0];
-                data.currentInstanceId = def.id;
+                    merged.instances.find((i: Aria2Instance) => i.isDefault) ||
+                    merged.instances[0];
+                merged.currentInstanceId = def.id;
             }
         }
-        return data;
+        return merged;
     } catch (error) {
-        return { ...defaultSetting } as Required<SettingType>;
+        return JSON.parse(JSON.stringify(defaultSetting)) as Required<SettingType>;
     }
 };
 
@@ -186,11 +211,14 @@ export const setCurrentInstance = (id: string) => {
     }
 };
 
-/** 新增实例 */
+/** 新增实例 (不自动切换 currentInstanceId, 由调用方统一处理) */
 export const addInstance = (inst: Aria2Instance) => {
     const s = getSetting();
     const instances = [...s.instances, inst];
-    saveSetting({ ...s, instances, currentInstanceId: inst.id });
+    // 如果是第一个实例, 自动设为默认
+    const hasDefault = instances.some(i => i.isDefault);
+    if (!hasDefault) instances[instances.length - 1].isDefault = true;
+    saveSetting({ ...s, instances });
 };
 
 /** 更新实例 */
@@ -207,9 +235,13 @@ export const removeInstance = (id: string) => {
     const s = getSetting();
     if (s.instances.length <= 1) return;
     const instances = s.instances.filter(i => i.id !== id);
+    // 补默认: 如果删掉的是默认实例, 选第一个补
+    if (!instances.some(i => i.isDefault)) {
+        instances[0].isDefault = true;
+    }
     const newCurrentId =
         s.currentInstanceId === id
-            ? (instances.find(i => i.isDefault) || instances[0]).id
+            ? instances.find(i => i.isDefault)?.id || instances[0].id
             : s.currentInstanceId;
     saveSetting({ ...s, instances, currentInstanceId: newCurrentId });
 };
