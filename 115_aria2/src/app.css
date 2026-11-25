@@ -53,61 +53,77 @@
 .bdp-toolbar {
     position: absolute;
     right: 200px;
+    top: 0;
     z-index: 100;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    height: 28px;
+    height: 32px;
 }
 
-/* 实例下拉: 深色半透明底 + 白色字 + 白色边框 */
-.bdp-instance-select {
-    height: 100%;
+/* ===== 下拉 & 按钮: 统一规格 ===== */
+.bdp-instance-select,
+.bdp-button {
+    box-sizing: border-box;
+    height: 32px;
     font-size: 12px;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 4px;
-    padding: 0 6px;
-    cursor: pointer;
-    min-width: 110px;
-    max-width: 150px;
     line-height: 1;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+    color: #606266;
+    background: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.bdp-instance-select:hover,
+.bdp-button:hover {
+    color: #09aaff;
+    border-color: #09aaff;
+}
+
+/* 实例下拉 (select) */
+.bdp-instance-select {
+    padding: 0 22px 0 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 10px 6px;
+    min-width: 110px;
+    max-width: 160px;
 }
 .bdp-instance-select:hover {
-    background: rgba(0, 0, 0, 0.7);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2309aaff'/%3E%3C/svg%3E");
 }
 .bdp-instance-select option {
     color: #333;
     background: #fff;
 }
 
-/* ARIA2 按钮: 和下拉同一风格, 统一深色底 + 白色字 + 白色边框 */
+/* ARIA2 按钮 */
 .bdp-button {
     position: relative; /* 覆盖原 absolute, 作为 flex 子元素 */
-    height: 100%;
     margin: 0;
-    z-index: inherit; /* 继承父 z-index */
-    text-align: center;
-    color: #fff;
-    cursor: pointer;
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 4px;
-    padding: 0 10px;
-    font-size: 12px;
-    font-family: inherit;
-    line-height: 1;
+    padding: 0 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #09aaff;
+    border-color: #09aaff;
 }
 .bdp-button:hover {
-    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    background: #09aaff;
+    border-color: #09aaff;
 }
 
 .bdp-button-text {
     font-size: 12px;
     line-height: 1;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-weight: inherit;
+    letter-spacing: inherit;
 }
 
 /* ===== 设置面板 (保留原 v2.0 多实例样式) ===== */
