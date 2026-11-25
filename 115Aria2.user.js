@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         115网盘导出到 Aria2
 // @namespace    https://nasctl.com/
-// @version      2.0.20261124
+// @version      2.0.20261125
 // @author       fuxin052, BackZhao
 // @description  115网盘文件导出到 Aria2 下载, 支持多 aria2 实例切换
 // @license      MIT
@@ -29,7 +29,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-var vite_plugin_monkey_5990f770bc35c = function(exports) {
+var vite_plugin_monkey_240294744abc6 = function(exports) {
   var _a, _b;
   "use strict";
   var n, l$1, u$2, t, o$3, f$1 = {}, e$1 = [], c$1 = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;

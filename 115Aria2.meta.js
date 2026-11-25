@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         115网盘导出到 Aria2
 // @namespace    https://nasctl.com/
-// @version      2.0.20261124
+// @version      2.0.20261125
 // @author       fuxin052, BackZhao
 // @description  115网盘文件导出到 Aria2 下载, 支持多 aria2 实例切换
 // @license      MIT
