@@ -102,21 +102,20 @@
 
 ## 📦 构建说明
 
-仅 `115_aria2` 一个脚本需要构建 (TypeScript + Preact + Vite):
+仅 `115_aria2` 一个脚本需要构建 (TypeScript + Preact + Vite)。**构建自动触发产物拆分**，一行命令搞定：
 
 ```bash
 cd 115_aria2
-pnpm install        # 或 npm install
-pnpm build          # 产物: dist/115pan_aria2.user.js
+npm install        # 首次, 安装依赖 (node_modules 已在 .gitignore 忽略)
+npm run build      # 115Aria2.meta.js + 115Aria2.user.js 自动出现在仓库根目录
 ```
 
-构建完成后, 将 `dist/115pan_aria2.user.js` 的 header 部分截取出来保存为根目录的 `.meta.js`, 完整文件保存为 `.user.js`:
+`npm run build` 等价于 `tsc && vite build`。vite 构建完成后内置了一个 rollup hook (`splitUserscriptToRepoRoot`)，自动做两件事：
 
-```bash
-# 假设 dist/115pan_aria2.user.js 已生成
-awk '/^\/\/ ==\/UserScript==$/{exit} {print}' dist/115pan_aria2.user.js > ../115Aria2.meta.js
-cp dist/115pan_aria2.user.js ../115Aria2.user.js
-```
+- 从 `dist/115pan_aria2.user.js` 切出 header → 写入 `../115Aria2.meta.js`（updateURL 用）
+- 完整文件 → 写入 `../115Aria2.user.js`（安装用）
+
+所以每次改完源码，只要 `npm run build`，然后 `git add -A && git commit` 就行，不用手动拆分。
 
 ---
 
