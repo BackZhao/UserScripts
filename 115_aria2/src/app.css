@@ -58,36 +58,41 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    height: 32px;
 }
 
 /* ===== 下拉 & 按钮: 统一规格 ===== */
 .bdp-instance-select,
 .bdp-button {
+    /* 重置所有浏览器默认样式 */
+    all: unset;
     box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+    -moz-appearance: none;
+
+    /* 尺寸硬锁 */
+    width: auto;
     height: 32px;
+    margin: 0;
+    padding: 0;
+
+    /* 文字 */
     font-size: 12px;
-    line-height: 1;
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 32px;      /* 与 height 相同 = 垂直居中 */
+    text-align: center;
+    cursor: pointer;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
-    color: #606266;
-    background: #ffffff;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
-}
-.bdp-instance-select:hover,
-.bdp-button:hover {
-    color: #09aaff;
-    border-color: #09aaff;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 
 /* 实例下拉 (select) */
 .bdp-instance-select {
+    color: #606266;
+    background: #ffffff;
     padding: 0 22px 0 10px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
+    text-align: left;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
@@ -96,6 +101,8 @@
     max-width: 160px;
 }
 .bdp-instance-select:hover {
+    color: #09aaff;
+    border-color: #09aaff;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2309aaff'/%3E%3C/svg%3E");
 }
 .bdp-instance-select option {
@@ -103,25 +110,24 @@
     background: #fff;
 }
 
-/* ARIA2 按钮 */
+/* ARIA2 按钮 — 主按钮风格: 蓝底白字, 一眼能识别 */
 .bdp-button {
-    position: relative; /* 覆盖原 absolute, 作为 flex 子元素 */
-    margin: 0;
+    color: #ffffff;
+    background: #09aaff;
+    border-color: #09aaff;
     padding: 0 14px;
     font-weight: 600;
     letter-spacing: 0.5px;
-    color: #09aaff;
-    border-color: #09aaff;
 }
 .bdp-button:hover {
+    background: #0090dd;   /* 稍微深一点的蓝, 产生 hover 反馈 */
+    border-color: #0090dd;
     color: #fff;
-    background: #09aaff;
-    border-color: #09aaff;
 }
 
 .bdp-button-text {
     font-size: 12px;
-    line-height: 1;
+    line-height: 32px;
     font-weight: inherit;
     letter-spacing: inherit;
 }
