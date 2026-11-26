@@ -61,82 +61,88 @@
     height: 32px;
 }
 
+/* 新版页面 (bdp-newui-toolbar 外层): 强制工具栏不要透明 */
+#bdp-newui-toolbar {
+    background: transparent !important;
+}
+#bdp-newui-toolbar > .bdp-toolbar {
+    position: absolute !important;
+}
+
 /* ===== 下拉 & 按钮: 统一规格 (保守写法, 不用 all:unset) ===== */
 .bdp-instance-select,
 .bdp-button {
-    display: inline-flex;
-    align-items: center;           /* 内容垂直居中 (比 line-height 更可靠, select 也生效) */
-    justify-content: center;
-    box-sizing: border-box;
-    height: 100%;                  /* 撑满父容器的 32px */
-    margin: 0;
-    font-size: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
-    background-clip: padding-box;
-    cursor: pointer;
-    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    height: 100% !important;
+    margin: 0 !important;
+    font-size: 12px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif !important;
+    border: 1px solid #dcdfe6 !important;
+    border-radius: 4px !important;
+    background-clip: padding-box !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s !important;
 
     /* 清浏览器默认的 select/button 外观 */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
     /* 清 button 特有 */
-    -webkit-user-select: none;
-    user-select: none;
-    outline: none;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    outline: none !important;
 }
 
 /* 实例下拉 (select 特有) */
 .bdp-instance-select {
-    color: #606266;
-    background-color: #ffffff;
-    padding: 0 22px 0 10px;        /* 右侧留空间给自定义下拉箭头 */
-    text-align: left;
-    justify-content: flex-start;
-    /* 自定义 SVG 下拉箭头 */
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 10px 6px;
-    min-width: 110px;
-    max-width: 160px;
-    /* 清 select 特有 */
-    text-indent: 0;
-    text-overflow: ellipsis;
+    color: #606266 !important;
+    background-color: #ffffff !important;
+    padding: 0 22px 0 10px !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 8px center !important;
+    background-size: 10px 6px !important;
+    min-width: 110px !important;
+    max-width: 160px !important;
+    text-indent: 0 !important;
+    text-overflow: ellipsis !important;
 }
 .bdp-instance-select:hover {
-    color: #09aaff;
-    border-color: #09aaff;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2309aaff'/%3E%3C/svg%3E");
+    color: #09aaff !important;
+    border-color: #09aaff !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2309aaff'/%3E%3C/svg%3E") !important;
 }
 .bdp-instance-select option {
-    color: #333;
-    background: #fff;
+    color: #333 !important;
+    background: #fff !important;
 }
 
 /* ARIA2 按钮 — 主按钮风格: 蓝底白字 */
 .bdp-button {
-    color: #ffffff;
-    background-color: #09aaff;
-    border-color: #09aaff;
-    padding: 0 14px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    line-height: 1;                /* inline-flex + align-items:center 已经处理垂直居中, line-height 只是防文字重叠 */
+    color: #ffffff !important;
+    background-color: #09aaff !important;
+    border-color: #09aaff !important;
+    padding: 0 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1 !important;
 }
 .bdp-button:hover {
-    background-color: #0090dd;     /* 稍微深一点的蓝, 产生 hover 反馈 */
-    border-color: #0090dd;
-    color: #fff;
+    background-color: #0090dd !important;
+    border-color: #0090dd !important;
+    color: #fff !important;
 }
 
 .bdp-button-text {
-    font-size: 12px;
-    line-height: 1;
-    font-weight: inherit;
-    letter-spacing: inherit;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    font-weight: inherit !important;
+    letter-spacing: inherit !important;
 }
 
 /* ===== 设置面板 (保留原 v2.0 多实例样式) ===== */

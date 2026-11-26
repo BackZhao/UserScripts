@@ -114,12 +114,15 @@ async function createDownloadTask(o: { list: HookFileItem[] }) {
     }
 }
 
-/** 注入 browserInterface —— 在 @run-at document-start 时立即调用 */
+/** 注入 browserInterface —— 在 @run-at document-start 时立即调用
+ *
+ * 新版 115 SPA (storage/allfiles) 可能在 bundle 加载后重新给 window.browserInterface 赋值,
+ * 所以用 defineProperty + setter 来 hook 一切赋值操作, 确保不会被覆盖。
+ */
 export function injectBrowserInterface() {
     const w = unsafeWindow as any;
-    const original = w.browserInterface || {};
 
-    const patched = {
+    const makePatched = (original: any = {}) => ({
         ...original,
         /** 115 网页会调这个创建下载任务 */
         CreateDownloadTask(s: string) {
@@ -134,9 +137,49 @@ export function injectBrowserInterface() {
         GetBrowserVersion() {
             return '100.0.0';
         },
-    };
+    });
 
-    // cloneInto 兼容 (Firefox 需要, Chrome 无影响)
-    const ci: any = w.cloneInto || ((x: any) => x);
-    w.browserInterface = ci(patched, w, { cloneFunctions: true });
+    const ci = w.cloneInto || ((x: any) => x);
+
+    // 如果已经存在 (115 SPA 在我们之后赋值), 先 hook 一次
+    if (w.browserInterface) {
+        const patched = ci(makePatched(w.browserInterface), w, { cloneFunctions: true });
+        try {
+            Object.defineProperty(w, 'browserInterface', {
+                configurable: true,
+                enumerable: true,
+                get() {
+                    return patched;
+                },
+                set(v) {
+                    // 新版 SPA 重新赋值时, 再次 hook 并存一份 patched
+                    patched.CreateDownloadTask = makePatched(v).CreateDownloadTask;
+                    patched.GetBrowserVersion = makePatched(v).GetBrowserVersion;
+                },
+            });
+        } catch (e) {
+            // 某些浏览器可能不允许 defineProperty, 兜底直接赋值
+            w.browserInterface = patched;
+        }
+    } else {
+        // 还不存在, 先设一个假的, 然后 hook setter
+        // 新版 SPA 后续会通过 setter 触发重新 hook
+        const fake = ci(makePatched(), w, { cloneFunctions: true });
+        try {
+            Object.defineProperty(w, 'browserInterface', {
+                configurable: true,
+                enumerable: true,
+                get() {
+                    return fake;
+                },
+                set(v) {
+                    // 新版 SPA 赋值真实 browserInterface 时, 覆盖 CreateDownloadTask
+                    fake.CreateDownloadTask = makePatched(v).CreateDownloadTask;
+                    fake.GetBrowserVersion = makePatched(v).GetBrowserVersion;
+                },
+            });
+        } catch (e) {
+            w.browserInterface = fake;
+        }
+    }
 }

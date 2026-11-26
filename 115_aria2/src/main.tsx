@@ -180,7 +180,40 @@ export class Pan115 {
         }
 
         if (mountPoint) {
-            render(<App pan115={this} />, mountPoint);
+            const mountEl = mountPoint; // 捕获非 null 引用
+            render(<App pan115={this} />, mountEl);
+            // 新版页面的 Next.js 全局按钮 reset (button { background: transparent })
+            // 会覆盖 Preact 渲染后的 CSS, 必须用 DOM API 强制设 inline style 才能赢
+            if (this.isNewUI) {
+                setTimeout(() => {
+                    const btn = mountEl.querySelector(
+                        '.bdp-button'
+                    ) as HTMLElement | null;
+                    const sel = mountEl.querySelector(
+                        '.bdp-instance-select'
+                    ) as HTMLElement | null;
+                    if (btn) {
+                        btn.style.setProperty(
+                            'background-color',
+                            '#09aaff',
+                            'important'
+                        );
+                        btn.style.setProperty('color', '#ffffff', 'important');
+                        btn.style.setProperty(
+                            'border-color',
+                            '#09aaff',
+                            'important'
+                        );
+                    }
+                    if (sel) {
+                        sel.style.setProperty(
+                            'background-color',
+                            '#ffffff',
+                            'important'
+                        );
+                    }
+                }, 0);
+            }
         } else {
             console.warn('[115Enhance] 找不到工具栏挂载点');
         }

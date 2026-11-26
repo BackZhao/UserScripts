@@ -66,6 +66,11 @@ export function App(props: Props) {
                     value={currentInstanceId}
                     onChange={handleSelectInstance}
                     title="选择 aria2 实例"
+                    style={{
+                        background: '#ffffff',
+                        color: '#606266',
+                        border: '1px solid #dcdfe6',
+                    }}
                 >
                     {instances.map(i => (
                         <option key={i.id} value={i.id}>
@@ -86,6 +91,11 @@ export function App(props: Props) {
                     )}
                     className="bdp-button button"
                     title="鼠标左键下载文件, 右键打开设置"
+                    style={{
+                        background: '#09aaff',
+                        color: '#ffffff',
+                        border: '1px solid #09aaff',
+                    }}
                 >
                     <span className="bdp-button-text">ARIA2</span>
                 </button>
