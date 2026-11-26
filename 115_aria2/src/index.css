@@ -1,3 +1,196 @@
 .tcuLAu{
   left: 80px;
 }
+
+/* ========== 115Enhance DownloadDialog 样式 ========== */
+.enhance-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(6px);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.enhance-panel {
+  width: min(720px, 100%);
+  max-height: min(82vh, 760px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98));
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+  color: #0f172a;
+}
+.enhance-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.95);
+  flex-shrink: 0;
+}
+.enhance-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #0f172a;
+}
+.enhance-subtitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+.enhance-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.14);
+  color: #475569;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.enhance-close:hover {
+  background: rgba(148, 163, 184, 0.28);
+}
+.enhance-body {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+.enhance-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.enhance-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .12s ease, filter .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.enhance-btn:active {
+  transform: scale(0.97);
+}
+.enhance-btn-primary {
+  background: linear-gradient(180deg, #1677ff, #0f6ce6);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(22, 119, 255, 0.22);
+}
+.enhance-btn-primary:hover {
+  filter: brightness(1.04);
+}
+.enhance-btn-primary.enhance-btn-copied {
+  background: linear-gradient(180deg, #10b981, #059669);
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.22);
+}
+.enhance-btn-aria2 {
+  background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(139, 92, 246, 0.22);
+}
+.enhance-btn-aria2:hover:not(:disabled) {
+  filter: brightness(1.04);
+}
+.enhance-btn-aria2:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.enhance-aria2-result {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+.enhance-list {
+  overflow: auto;
+  max-height: min(56vh, 520px);
+  padding-right: 4px;
+  flex: 1;
+}
+.enhance-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid rgba(226, 232, 240, 0.96);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  cursor: pointer;
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+.enhance-item + .enhance-item {
+  margin-top: 10px;
+}
+.enhance-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(96, 165, 250, 0.7);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+.enhance-item-file {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+.enhance-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 46px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #e0f2fe, #eff6ff);
+  color: #0369a1;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.enhance-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+}
+.enhance-item-size {
+  flex: none;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .enhance-overlay { padding: 12px; }
+  .enhance-panel { width: 100%; max-height: 88vh; border-radius: 20px; }
+  .enhance-header, .enhance-body { padding-left: 16px; padding-right: 16px; }
+}

@@ -1,13 +1,13 @@
 // ==UserScript==
-// @name         115网盘导出到 Aria2
+// @name         115Enhance
 // @namespace    https://nasctl.com/
-// @version      2.0.20261125
-// @author       fuxin052, BackZhao
-// @description  115网盘文件导出到 Aria2 下载, 支持多 aria2 实例切换
+// @version      3.0.20261126
+// @author       fuxin052, kkHAIKE, BackZhao
+// @description  115网盘增强: 伪装115浏览器下载 + 导出到 Aria2, 支持多 aria2 实例
 // @license      MIT
 // @icon         https://115.com/web_icon.jpg
-// @downloadURL  https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Aria2.user.js
-// @updateURL    https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Aria2.meta.js
+// @downloadURL  https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Enhance.user.js
+// @updateURL    https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Enhance.meta.js
 // @match        *://115.com/*
 // @connect      115.com
 // @connect      *
@@ -16,12 +16,14 @@
 // @grant        GM_getValue
 // @grant        GM_registerMenuCommand
 // @grant        unsafeWindow
+// @grant        GM_setClipboard
+// @grant        GM_log
 // @grant        GM_addValueChangeListener
 // @grant        GM_removeValueChangeListener
-// @run-at       document-end
+// @run-at       document-start
 // ==/UserScript==
 
-(e=>{const t=document.createElement("style");t.dataset.source="vite-plugin-monkey",t.innerText=e,document.head.appendChild(t)})(`.bdp-setting{width:100%;font-size:16px;margin-top:12px}.bdp-setting td{height:36px;padding-right:10px;vertical-align:middle}.bdp-setting input{height:26px;vertical-align:middle;font-size:16px;color:#000;border:1px solid #000}.bdp-setting input[type=text]{width:100%}.bdp-setting button{margin-top:20px;width:100%;height:36px}.bdp-row{display:flex;justify-content:space-between}.failList{outline:1px solid red;font-size:12px}.failList>div{overflow:hidden;width:100%;white-space:nowrap;text-overflow:ellipsis}.failList>div:nth-child(2n){background-color:#0003}.bdp-buttons{display:flex}.bdp-buttons-close{flex:2 2 100%}.bdp-toolbar{position:absolute;right:200px;top:0;z-index:100;display:inline-flex;align-items:center;gap:6px}.bdp-instance-select,.bdp-button{all:unset;box-sizing:border-box;-webkit-appearance:none;appearance:none;-moz-appearance:none;width:auto;height:32px;margin:0;padding:0;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif;line-height:32px;text-align:center;cursor:pointer;border:1px solid #dcdfe6;border-radius:4px;transition:background-color .15s,border-color .15s,color .15s}.bdp-instance-select{color:#606266;background:#ffffff;padding:0 22px 0 10px;text-align:left;background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:10px 6px;min-width:110px;max-width:160px}.bdp-instance-select:hover{color:#09aaff;border-color:#09aaff;background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2309aaff'/%3E%3C/svg%3E")}.bdp-instance-select option{color:#333;background:#fff}.bdp-button{color:#fff;background:#09aaff;border-color:#09aaff;padding:0 14px;font-weight:600;letter-spacing:.5px}.bdp-button:hover{background:#0090dd;border-color:#0090dd;color:#fff}.bdp-button-text{font-size:12px;line-height:32px;font-weight:inherit;letter-spacing:inherit}.aria2-setting{font-size:14px}.aria2-instance-table{width:100%;border-collapse:collapse;font-size:13px}.aria2-instance-table th{text-align:left;padding:6px 8px;background:#f5f5f5;border-bottom:1px solid #ddd;font-weight:600}.aria2-instance-table td{padding:8px;border-bottom:1px solid #eee;vertical-align:middle}.aria2-instance-table tbody tr:hover{background:#fafafa}.aria2-editing td{background:#f0f7ff}.aria2-url-cell{font-family:monospace;font-size:12px;color:#555;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.aria2-status-cell{font-size:12px}.aria2-default-tag{display:inline-block;margin-left:6px;padding:1px 6px;background:#09aaff;color:#fff;border-radius:3px;font-size:10px;vertical-align:middle}.aria2-edit-row td{padding:8px}.aria2-edit-form{width:100%}.aria2-edit-form td{padding:4px 6px;font-size:13px}.aria2-edit-form input[type=text],.aria2-edit-form input[type=number]{width:100%;box-sizing:border-box;height:26px;font-size:13px;border:1px solid #ccc;border-radius:3px}.aria2-btn-sm{height:24px;padding:0 8px;margin-right:4px;font-size:12px;background:#fff;border:1px solid #ccc;border-radius:3px;cursor:pointer}.aria2-btn-sm:hover:not(:disabled){background:#f0f0f0}.aria2-btn-sm:disabled{opacity:.4;cursor:not-allowed}.aria2-btn-sm.aria2-btn-danger{color:#d9534f;border-color:#d9534f}.aria2-btn-sm.aria2-btn-danger:hover:not(:disabled){background:#ffeaea}.tcuLAu{left:80px}`);
+(n=>{const e=document.createElement("style");e.dataset.source="vite-plugin-monkey",e.innerText=n,document.head.appendChild(e)})(`.bdp-setting{width:100%;font-size:16px;margin-top:12px}.bdp-setting td{height:36px;padding-right:10px;vertical-align:middle}.bdp-setting input{height:26px;vertical-align:middle;font-size:16px;color:#000;border:1px solid #000}.bdp-setting input[type=text]{width:100%}.bdp-setting button{margin-top:20px;width:100%;height:36px}.bdp-row{display:flex;justify-content:space-between}.failList{outline:1px solid red;font-size:12px}.failList>div{overflow:hidden;width:100%;white-space:nowrap;text-overflow:ellipsis}.failList>div:nth-child(2n){background-color:#0003}.bdp-buttons{display:flex}.bdp-buttons-close{flex:2 2 100%}.bdp-toolbar{position:absolute;right:200px;top:0;z-index:100;display:inline-flex;align-items:center;gap:6px}.bdp-instance-select,.bdp-button{all:unset;box-sizing:border-box;-webkit-appearance:none;appearance:none;-moz-appearance:none;width:auto;height:32px;margin:0;padding:0;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,PingFang SC,Microsoft YaHei,sans-serif;line-height:32px;text-align:center;cursor:pointer;border:1px solid #dcdfe6;border-radius:4px;transition:background-color .15s,border-color .15s,color .15s}.bdp-instance-select{color:#606266;background:#ffffff;padding:0 22px 0 10px;text-align:left;background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;background-size:10px 6px;min-width:110px;max-width:160px}.bdp-instance-select:hover{color:#09aaff;border-color:#09aaff;background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2309aaff'/%3E%3C/svg%3E")}.bdp-instance-select option{color:#333;background:#fff}.bdp-button{color:#fff;background:#09aaff;border-color:#09aaff;padding:0 14px;font-weight:600;letter-spacing:.5px}.bdp-button:hover{background:#0090dd;border-color:#0090dd;color:#fff}.bdp-button-text{font-size:12px;line-height:32px;font-weight:inherit;letter-spacing:inherit}.aria2-setting{font-size:14px}.aria2-instance-table{width:100%;border-collapse:collapse;font-size:13px}.aria2-instance-table th{text-align:left;padding:6px 8px;background:#f5f5f5;border-bottom:1px solid #ddd;font-weight:600}.aria2-instance-table td{padding:8px;border-bottom:1px solid #eee;vertical-align:middle}.aria2-instance-table tbody tr:hover{background:#fafafa}.aria2-editing td{background:#f0f7ff}.aria2-url-cell{font-family:monospace;font-size:12px;color:#555;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.aria2-status-cell{font-size:12px}.aria2-default-tag{display:inline-block;margin-left:6px;padding:1px 6px;background:#09aaff;color:#fff;border-radius:3px;font-size:10px;vertical-align:middle}.aria2-edit-row td{padding:8px}.aria2-edit-form{width:100%}.aria2-edit-form td{padding:4px 6px;font-size:13px}.aria2-edit-form input[type=text],.aria2-edit-form input[type=number]{width:100%;box-sizing:border-box;height:26px;font-size:13px;border:1px solid #ccc;border-radius:3px}.aria2-btn-sm{height:24px;padding:0 8px;margin-right:4px;font-size:12px;background:#fff;border:1px solid #ccc;border-radius:3px;cursor:pointer}.aria2-btn-sm:hover:not(:disabled){background:#f0f0f0}.aria2-btn-sm:disabled{opacity:.4;cursor:not-allowed}.aria2-btn-sm.aria2-btn-danger{color:#d9534f;border-color:#d9534f}.aria2-btn-sm.aria2-btn-danger:hover:not(:disabled){background:#ffeaea}.tcuLAu{left:80px}.enhance-overlay{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(15,23,42,.42);backdrop-filter:blur(6px);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,PingFang SC,Microsoft YaHei,sans-serif}.enhance-panel{width:min(720px,100%);max-height:min(82vh,760px);display:flex;flex-direction:column;overflow:hidden;border-radius:24px;border:1px solid rgba(148,163,184,.28);background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,252,.98));box-shadow:0 24px 70px #0f172a38;color:#0f172a}.enhance-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 24px 18px;border-bottom:1px solid rgba(226,232,240,.95);flex-shrink:0}.enhance-title{margin:0;font-size:20px;line-height:1.2;font-weight:700;color:#0f172a}.enhance-subtitle{margin:6px 0 0;font-size:13px;color:#64748b}.enhance-close{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:0;border-radius:999px;background:rgba(148,163,184,.14);color:#475569;font-size:22px;line-height:1;cursor:pointer}.enhance-close:hover{background:rgba(148,163,184,.28)}.enhance-body{padding:20px 24px 24px;display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}.enhance-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}.enhance-btn{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 20px;border:0;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;transition:transform .12s ease,filter .12s ease,box-shadow .12s ease,background-color .12s ease}.enhance-btn:active{transform:scale(.97)}.enhance-btn-primary{background:linear-gradient(180deg,#1677ff,#0f6ce6);color:#fff;box-shadow:0 10px 24px #1677ff38}.enhance-btn-primary:hover{filter:brightness(1.04)}.enhance-btn-primary.enhance-btn-copied{background:linear-gradient(180deg,#10b981,#059669);box-shadow:0 10px 24px #10b98138}.enhance-btn-aria2{background:linear-gradient(180deg,#8b5cf6,#7c3aed);color:#fff;box-shadow:0 10px 24px #8b5cf638}.enhance-btn-aria2:hover:not(:disabled){filter:brightness(1.04)}.enhance-btn-aria2:disabled{opacity:.6;cursor:not-allowed}.enhance-aria2-result{font-size:12px;color:#64748b;font-weight:600}.enhance-list{overflow:auto;max-height:min(56vh,520px);padding-right:4px;flex:1}.enhance-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px;border:1px solid rgba(226,232,240,.96);border-radius:14px;background:rgba(255,255,255,.96);cursor:pointer;transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease}.enhance-item+.enhance-item{margin-top:10px}.enhance-item:hover{transform:translateY(-1px);border-color:#60a5fab3;box-shadow:0 8px 20px #0f172a14}.enhance-item-file{min-width:0;display:flex;align-items:center;gap:12px;flex:1}.enhance-badge{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:46px;height:30px;padding:0 10px;border-radius:10px;background:linear-gradient(180deg,#e0f2fe,#eff6ff);color:#0369a1;font-size:12px;font-weight:800;letter-spacing:.03em;text-transform:uppercase}.enhance-item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#0f172a;font-size:14px;font-weight:600}.enhance-item-size{flex:none;color:#64748b;font-size:12px;font-weight:600;white-space:nowrap}@media (max-width: 640px){.enhance-overlay{padding:12px}.enhance-panel{width:100%;max-height:88vh;border-radius:20px}.enhance-header,.enhance-body{padding-left:16px;padding-right:16px}}`);
 
 var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -29,10 +31,10 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
+var vite_plugin_monkey_aaa95e501960f8 = function(exports) {
   var _a, _b;
   "use strict";
-  var n, l$1, u$2, t, o$3, f$1 = {}, e$1 = [], c$1 = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
+  var n$1, l$1, u$2, t, o$3, f$1 = {}, e$1 = [], c$2 = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
   function s$1(n2, l2) {
     for (var u2 in l2)
       n2[u2] = l2[u2];
@@ -46,7 +48,7 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
     var t2, o2, r2, f2 = {};
     for (r2 in u2)
       "key" == r2 ? t2 = u2[r2] : "ref" == r2 ? o2 = u2[r2] : f2[r2] = u2[r2];
-    if (arguments.length > 2 && (f2.children = arguments.length > 3 ? n.call(arguments, 2) : i2), "function" == typeof l2 && null != l2.defaultProps)
+    if (arguments.length > 2 && (f2.children = arguments.length > 3 ? n$1.call(arguments, 2) : i2), "function" == typeof l2 && null != l2.defaultProps)
       for (r2 in l2.defaultProps)
         void 0 === f2[r2] && (f2[r2] = l2.defaultProps[r2]);
     return v$1(l2, f2, t2, o2, null);
@@ -148,7 +150,7 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
       t2 && "function" != typeof l2[o2] || "children" === o2 || "key" === o2 || "value" === o2 || "checked" === o2 || u2[o2] === l2[o2] || H$1(n2, o2, l2[o2], u2[o2], i2);
   }
   function $$1(n2, l2, u2) {
-    "-" === l2[0] ? n2.setProperty(l2, u2) : n2[l2] = null == u2 ? "" : "number" != typeof u2 || c$1.test(l2) ? u2 : u2 + "px";
+    "-" === l2[0] ? n2.setProperty(l2, u2) : n2[l2] = null == u2 ? "" : "number" != typeof u2 || c$2.test(l2) ? u2 : u2 + "px";
   }
   function H$1(n2, l2, u2, i2, t2) {
     var o2;
@@ -247,7 +249,7 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
     if (null === d2)
       y2 === p2 || c2 && l2.data === p2 || (l2.data = p2);
     else {
-      if (r2 = r2 && n.call(l2.childNodes), h2 = (y2 = i2.props || f$1).dangerouslySetInnerHTML, v2 = p2.dangerouslySetInnerHTML, !c2) {
+      if (r2 = r2 && n$1.call(l2.childNodes), h2 = (y2 = i2.props || f$1).dangerouslySetInnerHTML, v2 = p2.dangerouslySetInnerHTML, !c2) {
         if (null != r2)
           for (y2 = {}, k2 = 0; k2 < l2.attributes.length; k2++)
             y2[l2.attributes[k2].name] = l2.attributes[k2].value;
@@ -290,9 +292,9 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
   }
   function P$1(u2, i2, t2) {
     var o2, r2, e2;
-    l$1.__ && l$1.__(u2, i2), r2 = (o2 = "function" == typeof t2) ? null : t2 && t2.__k || i2.__k, e2 = [], j$2(i2, u2 = (!o2 && t2 || i2).__k = h$2(p$1, null, [u2]), r2 || f$1, f$1, void 0 !== i2.ownerSVGElement, !o2 && t2 ? [t2] : r2 ? null : i2.firstChild ? n.call(i2.childNodes) : null, e2, !o2 && t2 ? t2 : r2 ? r2.__e : i2.firstChild, o2), z$2(e2, u2);
+    l$1.__ && l$1.__(u2, i2), r2 = (o2 = "function" == typeof t2) ? null : t2 && t2.__k || i2.__k, e2 = [], j$2(i2, u2 = (!o2 && t2 || i2).__k = h$2(p$1, null, [u2]), r2 || f$1, f$1, void 0 !== i2.ownerSVGElement, !o2 && t2 ? [t2] : r2 ? null : i2.firstChild ? n$1.call(i2.childNodes) : null, e2, !o2 && t2 ? t2 : r2 ? r2.__e : i2.firstChild, o2), z$2(e2, u2);
   }
-  n = e$1.slice, l$1 = { __e: function(n2, l2, u2, i2) {
+  n$1 = e$1.slice, l$1 = { __e: function(n2, l2, u2, i2) {
     for (var t2, o2, r2; l2 = l2.__; )
       if ((t2 = l2.__c) && !t2.__)
         try {
@@ -308,7 +310,7 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
   }, d$2.prototype.forceUpdate = function(n2) {
     this.__v && (this.__e = true, n2 && this.__h.push(n2), b$1(this));
   }, d$2.prototype.render = p$1, t = [], g$2.__r = 0;
-  var r$1, u$1, i, o$2, f = 0, c = [], e = [], a = l$1.__b, v = l$1.__r, l = l$1.diffed, m = l$1.__c, d$1 = l$1.unmount;
+  var r$1, u$1, i, o$2, f = 0, c$1 = [], e = [], a = l$1.__b, v = l$1.__r, l = l$1.diffed, m = l$1.__c, d$1 = l$1.unmount;
   function p(t2, r2) {
     l$1.__h && l$1.__h(u$1, t2, f || r2), f = 0;
     var i2 = u$1.__H || (u$1.__H = { __: [], __h: [] });
@@ -365,7 +367,7 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
     }, t2);
   }
   function g$1() {
-    for (var t2; t2 = c.shift(); )
+    for (var t2; t2 = c$1.shift(); )
       if (t2.__P && t2.__H)
         try {
           t2.__H.__h.forEach(w$1), t2.__H.__h.forEach(z$1), t2.__H.__h = [];
@@ -384,7 +386,7 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
   }, l$1.diffed = function(t2) {
     l && l(t2);
     var r2 = t2.__c;
-    r2 && r2.__H && (r2.__H.__h.length && (1 !== c.push(r2) && o$2 === l$1.requestAnimationFrame || ((o$2 = l$1.requestAnimationFrame) || k)(g$1)), r2.__H.__.forEach(function(n2) {
+    r2 && r2.__H && (r2.__H.__h.length && (1 !== c$1.push(r2) && o$2 === l$1.requestAnimationFrame || ((o$2 = l$1.requestAnimationFrame) || k)(g$1)), r2.__H.__.forEach(function(n2) {
       n2.i && (n2.__H = n2.i), n2.__V !== e && (n2.__ = n2.__V), n2.i = void 0, n2.__V = e;
     })), i = u$1 = null;
   }, l$1.__c = function(t2, r2) {
@@ -437,10 +439,10 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
   var r = (_a = Reflect.get(document, "__monkeyWindow")) != null ? _a : window;
   r.GM;
   r.unsafeWindow = (_b = r.unsafeWindow) != null ? _b : window;
-  r.unsafeWindow;
+  var n = r.unsafeWindow;
   r.GM_info;
   r.GM_cookie;
-  var u = (...e2) => r.GM_setValue(...e2), o$1 = (...e2) => r.GM_addValueChangeListener(...e2), d = (...e2) => r.GM_removeValueChangeListener(...e2), b = (...e2) => r.GM_xmlhttpRequest(...e2), h = (...e2) => r.GM_getValue(...e2);
+  var u = (...e2) => r.GM_setValue(...e2), o$1 = (...e2) => r.GM_addValueChangeListener(...e2), d = (...e2) => r.GM_removeValueChangeListener(...e2), b = (...e2) => r.GM_xmlhttpRequest(...e2), c = (...e2) => r.GM_setClipboard(...e2), h = (...e2) => r.GM_getValue(...e2);
   const defaultInstances = [{
     id: "local",
     name: "\u672C\u5730 aria2",
@@ -3983,6 +3985,299 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
     });
   }
   const index = "";
+  let dialogShowFn = null;
+  function registerDialogShow(fn) {
+    dialogShowFn = fn;
+  }
+  function resolveSingleFile(file) {
+    return new Promise((resolve) => {
+      const tm = Math.floor(Date.now() / 1e3);
+      const {
+        data,
+        key
+      } = secret.encode(JSON.stringify({
+        pickcode: file.pc
+      }), tm);
+      b({
+        method: "POST",
+        url: `https://proapi.115.com/app/chrome/downurl?t=${tm}`,
+        data: `data=${encodeURIComponent(data)}`,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": getUA()
+        },
+        responseType: "json",
+        onload: (res) => {
+          var _a2;
+          try {
+            const json = res.response || JSON.parse(res.responseText || "{}");
+            if (!json.state) {
+              console.warn("[115Enhance] downurl \u72B6\u6001\u5F02\u5E38:", json.msg || json);
+              return resolve(null);
+            }
+            const decoded = JSON.parse(secret.decode(json.data, key));
+            const first = Object.values(decoded).pop();
+            if (first && ((_a2 = first.url) == null ? void 0 : _a2.url)) {
+              return resolve({
+                pc: file.pc,
+                file_name: first.file_name || file.file_name || file.pc,
+                sha1: first.sha1 || file.sha1 || "",
+                url: {
+                  url: first.url.url
+                },
+                file_size: first.file_size || 0,
+                cookie: json.cookie
+              });
+            }
+            resolve(null);
+          } catch (err) {
+            console.warn("[115Enhance] downurl \u89E3\u6790\u5F02\u5E38:", err);
+            resolve(null);
+          }
+        },
+        onerror: (err) => {
+          console.warn("[115Enhance] downurl \u8BF7\u6C42\u5931\u8D25:", err);
+          resolve(null);
+        }
+      });
+    });
+  }
+  async function createDownloadTask(o2) {
+    const files = (o2.list || []).filter((f2) => !f2.is_dir);
+    if (files.length === 0)
+      return;
+    const results = await Promise.allSettled(files.map((f2) => resolveSingleFile(f2)));
+    const items = [];
+    for (const r2 of results) {
+      if (r2.status === "fulfilled" && r2.value)
+        items.push(r2.value);
+    }
+    if (items.length === 0) {
+      console.warn("[115Enhance] \u6240\u6709\u6587\u4EF6\u89E3\u6790\u5931\u8D25");
+      return;
+    }
+    if (dialogShowFn) {
+      dialogShowFn(items);
+    } else {
+      const urls = items.map((i2) => i2.url.url).join("\n");
+      console.log("[115Enhance] \u4E0B\u8F7D\u94FE\u63A5 (Dialog \u672A\u5C31\u7EEA):", urls);
+    }
+  }
+  function injectBrowserInterface() {
+    const w2 = n;
+    const original = w2.browserInterface || {};
+    const patched = {
+      ...original,
+      CreateDownloadTask(s2) {
+        try {
+          const parsed = JSON.parse(decodeURIComponent(s2));
+          createDownloadTask(parsed);
+        } catch (err) {
+          console.error("[115Enhance] browserInterface.CreateDownloadTask \u89E3\u6790\u5931\u8D25:", err);
+        }
+      },
+      GetBrowserVersion() {
+        return "100.0.0";
+      }
+    };
+    const ci = w2.cloneInto || ((x2) => x2);
+    w2.browserInterface = ci(patched, w2, {
+      cloneFunctions: true
+    });
+  }
+  function formatSize(bytes) {
+    const n2 = Number(bytes);
+    if (!n2 || isNaN(n2))
+      return "";
+    const units = ["B", "KB", "MB", "GB", "TB"];
+    let i2 = 0;
+    let v2 = n2;
+    while (v2 >= 1024 && i2 < units.length - 1) {
+      v2 /= 1024;
+      i2++;
+    }
+    return `${v2.toFixed(v2 < 10 && i2 > 0 ? 2 : 1)} ${units[i2]}`;
+  }
+  function Dialog({
+    items,
+    onClose
+  }) {
+    const [copied, setCopied] = y(false);
+    const [aria2Status, setAria2Status] = y(null);
+    s(() => {
+      const h2 = (e2) => {
+        if (e2.key === "Escape")
+          onClose();
+      };
+      window.addEventListener("keydown", h2);
+      return () => window.removeEventListener("keydown", h2);
+    }, [onClose]);
+    const urlsText = items.map((i2) => i2.url.url).join("\n");
+    const handleCopy = q$1(() => {
+      c(urlsText, "text");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    }, [urlsText]);
+    const handlePushAria2 = q$1(async () => {
+      const inst = getCurrentInstance();
+      if (!(inst == null ? void 0 : inst.url)) {
+        alert("\u8BF7\u5148\u5728 115Enhance \u8BBE\u7F6E\u4E2D\u914D\u7F6E aria2 \u5B9E\u4F8B");
+        return;
+      }
+      setAria2Status({
+        pushing: true,
+        success: 0,
+        fail: 0,
+        total: items.length
+      });
+      const tool = new DownloadTool();
+      let success = 0;
+      let fail = 0;
+      for (const it of items) {
+        const file = {
+          isdir: false,
+          sha1: it.sha1,
+          pick_code: it.pc,
+          fileName: it.file_name,
+          fileSize: Number(it.file_size) || 0,
+          parent: "",
+          tryTimes: 0,
+          file_url: it.url.url,
+          file_size: Number(it.file_size) || 0,
+          cookie: it.cookie
+        };
+        try {
+          await tool.sendToAria2(file);
+          success++;
+        } catch (err) {
+          console.warn("[115Enhance] \u63A8\u9001\u5931\u8D25:", it.file_name, err);
+          fail++;
+        }
+        setAria2Status({
+          pushing: true,
+          success,
+          fail,
+          total: items.length
+        });
+      }
+      setAria2Status({
+        pushing: false,
+        success,
+        fail,
+        total: items.length
+      });
+    }, [items]);
+    const handleSingleDownload = q$1((item) => {
+      var _a2;
+      const a2 = document.createElement("a");
+      a2.href = item.url.url;
+      a2.download = item.file_name;
+      a2.style.display = "none";
+      document.body.appendChild(a2);
+      a2.click();
+      (_a2 = a2.parentNode) == null ? void 0 : _a2.removeChild(a2);
+    }, []);
+    const badge = (name) => {
+      const parts = name.split(".");
+      const ext = parts.length > 1 ? parts.pop().slice(0, 4).toUpperCase() : "FILE";
+      return ext;
+    };
+    return o("div", {
+      className: "enhance-overlay",
+      onClick: (e2) => {
+        if (e2.target === e2.currentTarget)
+          onClose();
+      },
+      children: o("div", {
+        className: "enhance-panel",
+        role: "dialog",
+        "aria-modal": "true",
+        children: [o("div", {
+          className: "enhance-header",
+          children: [o("div", {
+            children: [o("h3", {
+              className: "enhance-title",
+              children: "\u4E0B\u8F7D\u94FE\u63A5"
+            }), o("p", {
+              className: "enhance-subtitle",
+              children: ["\u5DF2\u89E3\u6790 ", items.length, " \u4E2A\u771F\u5B9E\u4E0B\u8F7D\u94FE\u63A5 \xB7 \u5355\u51FB\u6761\u76EE\u76F4\u63A5\u4E0B\u8F7D"]
+            })]
+          }), o("button", {
+            type: "button",
+            className: "enhance-close",
+            onClick: onClose,
+            "aria-label": "\u5173\u95ED",
+            children: "\xD7"
+          })]
+        }), o("div", {
+          className: "enhance-body",
+          children: [o("div", {
+            className: "enhance-toolbar",
+            children: [o("button", {
+              type: "button",
+              className: `enhance-btn enhance-btn-primary ${copied ? "enhance-btn-copied" : ""}`,
+              onClick: handleCopy,
+              children: copied ? "\u5DF2\u590D\u5236 \u2713" : "\u590D\u5236\u6240\u6709\u94FE\u63A5"
+            }), o("button", {
+              type: "button",
+              className: "enhance-btn enhance-btn-aria2",
+              onClick: handlePushAria2,
+              disabled: aria2Status == null ? void 0 : aria2Status.pushing,
+              children: (aria2Status == null ? void 0 : aria2Status.pushing) ? `\u63A8\u9001\u4E2D ${aria2Status.success + aria2Status.fail}/${aria2Status.total}...` : "\u5168\u90E8\u63A8\u5230 Aria2"
+            }), aria2Status && !aria2Status.pushing && o("span", {
+              className: "enhance-aria2-result",
+              children: ["\u6210\u529F ", aria2Status.success, "/", aria2Status.total, aria2Status.fail > 0 && ` \xB7 \u5931\u8D25 ${aria2Status.fail}`]
+            })]
+          }), o("div", {
+            className: "enhance-list",
+            children: items.map((item) => o("div", {
+              className: "enhance-item",
+              onClick: () => handleSingleDownload(item),
+              children: [o("div", {
+                className: "enhance-item-file",
+                children: [o("span", {
+                  className: "enhance-badge",
+                  children: badge(item.file_name)
+                }), o("span", {
+                  className: "enhance-item-name",
+                  title: item.file_name,
+                  children: item.file_name
+                })]
+              }), o("span", {
+                className: "enhance-item-size",
+                children: formatSize(item.file_size)
+              })]
+            }, item.pc))
+          })]
+        })]
+      })
+    });
+  }
+  let dialogHost = null;
+  function ensureHost() {
+    if (dialogHost && document.body.contains(dialogHost))
+      return dialogHost;
+    dialogHost = document.createElement("div");
+    dialogHost.id = "enhance-dialog-root";
+    document.body.appendChild(dialogHost);
+    return dialogHost;
+  }
+  function showDownloadDialog(items) {
+    const host = ensureHost();
+    const close = () => {
+      P$1(null, host);
+      host.remove();
+      dialogHost = null;
+    };
+    P$1(o(Dialog, {
+      items,
+      onClose: close
+    }), host);
+  }
+  injectBrowserInterface();
+  registerDialogShow((items) => {
+    showDownloadDialog(items);
+  });
   class Pan115 {
     constructor() {
       this._initUi();
@@ -4037,7 +4332,11 @@ var vite_plugin_monkey_fb503de99cbf4 = function(exports) {
       }), $toolWrap);
     }
   }
-  new Pan115();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => new Pan115());
+  } else {
+    new Pan115();
+  }
   exports.Pan115 = Pan115;
   Object.defineProperties(exports, { __esModule: { value: true }, [Symbol.toStringTag]: { value: "Module" } });
   return exports;

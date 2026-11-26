@@ -6,39 +6,45 @@
 
 ## 🧩 脚本列表
 
-### 1. 115网盘导出到 Aria2
+### 1. 115Enhance
 
 | 项目 | 内容 |
 |------|------|
-| 描述 | 在 115 网盘文件页面添加按钮, 一键将选中文件/文件夹导出到 aria2 下载。**v2.0 起支持多 aria2 实例切换**。 |
+| 描述 | 115 网盘增强: **伪装 115 浏览器下载** (fake115) + **导出到 Aria2** (多实例), 双入口自由选 |
 | 匹配 | `*://115.com/*` |
-| 作者 | 原版 [fuxin052](https://github.com/fuxin052/115_aria2), 当前版本 BackZhao |
-| 原始仓库 | <https://github.com/fuxin052/115_aria2> |
+| 作者 | 原版 [fuxin052](https://github.com/fuxin052/115_aria2), fake115 [kkHAIKE](https://github.com/kkHAIKE/fake115), 当前版本 BackZhao |
+| 原始仓库 | <https://github.com/fuxin052/115_aria2>, <https://github.com/kkHAIKE/fake115> |
 | 构建方式 | Preact + TypeScript + Vite, 源码见 `115_aria2/` 目录 |
 
 **安装地址**
 
 | 版本 | 链接 |
 |------|------|
-| 原版 (1.1.7) | <https://github.com/fuxin052/115_aria2/raw/main/dist/115pan_aria2.user.js> |
-| 本仓库 (2.0, 多实例) | <https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Aria2.user.js> |
+| 原版 115_aria2 (1.1.7) | <https://github.com/fuxin052/115_aria2/raw/main/dist/115pan_aria2.user.js> |
+| fake115d (1.0.3) | <https://github.com/kkHAIKE/fake115/blob/master/fake115d.user.js> |
+| 本仓库 (3.0, 整合版) | <https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Enhance.user.js> |
 
-**主要改动 (vs 原版)**
+**功能说明 (v3.0)**
 
-- 修复 UserScript header (namespace 改为 URL 格式, 移除硬编码内网 IP, 补全 MIT 协议和 downloadURL)
-- 支持多 aria2 实例管理: 添加 / 编辑 / 删除 / 切换 / 设置默认
-- 每个实例独立配置 URL / Token / 下载目录 / SHA-1 校验阈值
-- 新增"测试连接"按钮, 调用 `aria2.getVersion` JSON-RPC 验证实例可用性
-- 工具栏新增实例下拉选择器, 一键切换推送目标
-- 旧版本单实例配置首次运行时自动迁移
+1. **入口 A: 伪装 115 浏览器下载** (fake115 功能)
+   - 脚本最早 (`@run-at document-start`) 注入 `browserInterface` 劫持 115 网页原生下载按钮
+   - 用户在 115 网页点"下载"时, 不再唤起 115 客户端, 而是弹出下载链接对话框
+   - 支持: 单击条目直接下载 / 一键复制所有链接 / 全部推到 Aria2
+2. **入口 B: 手动选择文件导出到 Aria2** (115Aria2 功能)
+   - 在 115 文件页面右上角显示 ARIA2 工具栏, 支持多 aria2 实例下拉切换
+   - 左键 ARIA2 按钮导出选中文件/文件夹, 右键打开设置面板
+   - 每个实例独立配置 URL / Token / 下载目录 / SHA-1 校验阈值
+   - 新增"测试连接"按钮, 调用 `aria2.getVersion` 验证实例可用性
+3. **技术整合**
+   - fake115 的 RSA + XOR 加密逻辑复用本工程 TypeScript 版本 (`src/secret.ts`), 不再引入 `@require BigInteger.js` / `@require blueimp-md5` 外部依赖
+   - BrowserInterface 劫持 + Preact UI 共存于同一入口, 无冲突
 
 **使用方法**
 
 1. 安装脚本后访问 [115.com](https://115.com) 文件管理页面
-2. 页面右上角出现下拉选择器 (选择 aria2 实例) + ARIA2 按钮
-3. **右键** ARIA2 按钮打开设置面板, 添加 aria2 实例 (填写 URL, 如 `http://127.0.0.1:6800/jsonrpc`)
-4. 点击实例行的"测试"按钮验证连通性
-5. 选中文件/文件夹, **左键** ARIA2 按钮开始导出
+2. **被动入口** (fake115): 直接在 115 网页点原生"下载"按钮 → 弹出增强对话框
+3. **主动入口** (Aria2): 页面右上角出现 ARIA2 按钮, 选中文件/文件夹后点击导出
+4. **配置 aria2**: 右键 ARIA2 按钮打开设置面板, 添加实例并测试连接
 
 **aria2 端配置**: 请确保 aria2 开启了 RPC, 且允许当前浏览器访问 (设置 `rpc-allow-origin-all=true`, `rpc-listen-all=true`)。
 
@@ -107,13 +113,13 @@
 ```bash
 cd 115_aria2
 npm install        # 首次, 安装依赖 (node_modules 已在 .gitignore 忽略)
-npm run build      # 115Aria2.meta.js + 115Aria2.user.js 自动出现在仓库根目录
+npm run build      # 115Enhance.meta.js + 115Enhance.user.js 自动出现在仓库根目录
 ```
 
 `npm run build` 等价于 `tsc && vite build`。vite 构建完成后内置了一个 rollup hook (`splitUserscriptToRepoRoot`)，自动做两件事：
 
-- 从 `dist/115pan_aria2.user.js` 切出 header → 写入 `../115Aria2.meta.js`（updateURL 用）
-- 完整文件 → 写入 `../115Aria2.user.js`（安装用）
+- 从 `dist/115_enhance.user.js` 切出 header → 写入 `../115Enhance.meta.js`（updateURL 用）
+- 完整文件 → 写入 `../115Enhance.user.js`（安装用）
 
 所以每次改完源码，只要 `npm run build`，然后 `git add -A && git commit` 就行，不用手动拆分。
 
@@ -123,7 +129,8 @@ npm run build      # 115Aria2.meta.js + 115Aria2.user.js 自动出现在仓库�
 
 | 脚本 | 原始作者 | 原始链接 |
 |------|----------|----------|
-| 115Aria2 | [fuxin052](https://github.com/fuxin052) | <https://github.com/fuxin052/115_aria2> |
+| 115_aria2 | [fuxin052](https://github.com/fuxin052) | <https://github.com/fuxin052/115_aria2> |
+| fake115 | [kkHAIKE](https://github.com/kkHAIKE) | <https://github.com/kkHAIKE/fake115> |
 | PushTo115 | wangzijian0@vip.qq.com | <https://greasyfork.org/zh-CN/scripts/531685> |
 
-以上两个脚本在原版基础上进行了结构优化和功能扩展, 保留原始 MIT 协议。
+以上脚本在原版基础上进行了结构优化和功能扩展, 保留原始 MIT 协议。

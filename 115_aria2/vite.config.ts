@@ -5,9 +5,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 /**
- * 构建完成后, 把 dist/115pan_aria2.user.js 自动拆分并复制到仓库根目录:
- *   115Aria2.meta.js  ← 只含 UserScript header (updateURL 用)
- *   115Aria2.user.js  ← 完整文件 (安装用)
+ * 构建完成后, 把 dist/115_enhance.user.js 自动拆分并复制到仓库根目录:
+ *   115Enhance.meta.js  ← 只含 UserScript header (updateURL 用)
+ *   115Enhance.user.js  ← 完整文件 (安装用)
  */
 function splitUserscriptToRepoRoot() {
     return {
@@ -17,9 +17,9 @@ function splitUserscriptToRepoRoot() {
             order: 'post' as const,
             handler() {
                 const projectRoot = path.resolve(__dirname, '..');        // UserScripts/
-                const distFile   = path.resolve(__dirname, 'dist/115pan_aria2.user.js');
-                const metaFile   = path.resolve(projectRoot, '115Aria2.meta.js');
-                const userFile   = path.resolve(projectRoot, '115Aria2.user.js');
+                const distFile   = path.resolve(__dirname, 'dist/115_enhance.user.js');
+                const metaFile   = path.resolve(projectRoot, '115Enhance.meta.js');
+                const userFile   = path.resolve(projectRoot, '115Enhance.user.js');
 
                 if (!fs.existsSync(distFile)) {
                     console.warn(`[split-userscript] dist file not found: ${distFile}`);
@@ -60,12 +60,12 @@ export default defineConfig({
         monkey({
             entry: 'src/main.tsx',
             userscript: {
-                name: '115网盘导出到 Aria2',
+                name: '115Enhance',
                 icon: 'https://115.com/web_icon.jpg',
                 namespace: 'https://nasctl.com/',
-                author: 'fuxin052, BackZhao',
-                description: '115网盘文件导出到 Aria2 下载, 支持多 aria2 实例切换',
-                version: '2.0.20261125',
+                author: 'fuxin052, kkHAIKE, BackZhao',
+                description: '115网盘增强: 伪装115浏览器下载 + 导出到 Aria2, 支持多 aria2 实例',
+                version: '3.0.20261126',
                 license: 'MIT',
                 grant: [
                     'GM_xmlhttpRequest',
@@ -73,14 +73,16 @@ export default defineConfig({
                     'GM_getValue',
                     'GM_registerMenuCommand',
                     'unsafeWindow',
+                    'GM_setClipboard',
+                    'GM_log',
                 ],
                 match: ['*://115.com/*'],
                 connect: ['115.com', '*'],
-                'run-at': 'document-end',
+                'run-at': 'document-start',
                 downloadURL:
-                    'https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Aria2.user.js',
+                    'https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Enhance.user.js',
                 updateURL:
-                    'https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Aria2.meta.js',
+                    'https://raw.githubusercontent.com/BackZhao/UserScripts/master/115Enhance.meta.js',
             },
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any),
