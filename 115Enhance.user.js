@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         115Enhance
 // @namespace    https://nasctl.com/
-// @version      3.0.20261126
+// @version      4.0.20261126
 // @author       fuxin052, kkHAIKE, BackZhao
 // @description  115网盘增强: 伪装115浏览器下载 + 导出到 Aria2, 支持多 aria2 实例
 // @license      MIT
@@ -31,7 +31,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-var vite_plugin_monkey_1aeb2d70bec488 = function(exports) {
+var vite_plugin_monkey_ac4ea2caf7a638 = function(exports) {
   var _a, _b;
   "use strict";
   var n$1, l$1, u$2, t, o$3, f$1 = {}, e$1 = [], c$2 = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
@@ -4278,58 +4278,133 @@ var vite_plugin_monkey_1aeb2d70bec488 = function(exports) {
   registerDialogShow((items) => {
     showDownloadDialog(items);
   });
+  function isNewUI() {
+    return !!document.querySelector(".file-list-item[data-file-id]") || location.pathname.includes("/storage/");
+  }
+  function selectFromOldUI() {
+    const list = document.querySelectorAll('li[rel="item"].selected');
+    const selectedFile = [];
+    const selectedFolder = [];
+    Array.from(list).forEach((item) => {
+      const type = item.getAttribute("file_type");
+      if (type === "1") {
+        selectedFile.push({
+          isdir: false,
+          sha1: item.getAttribute("sha1"),
+          pick_code: item.getAttribute("pick_code"),
+          parent: "",
+          fileName: item.getAttribute("title"),
+          fileSize: Number(item.getAttribute("file_size")) || 0,
+          tryTimes: 0
+        });
+      }
+      if (type === "0") {
+        selectedFolder.push({
+          isdir: true,
+          cate_id: item.getAttribute("cate_id"),
+          parent: "",
+          folderName: item.getAttribute("title")
+        });
+      }
+    });
+    return {
+      selectedFile,
+      selectedFolder
+    };
+  }
+  function selectFromNewUI() {
+    const selectedFile = [];
+    const selectedFolder = [];
+    const items = document.querySelectorAll(".file-list-item[data-file-id]");
+    items.forEach((item) => {
+      var _a2, _b2, _c;
+      if ((_a2 = item.parentElement) == null ? void 0 : _a2.closest(".file-list-item[data-file-id]"))
+        return;
+      const cb = item.querySelector("input[type=checkbox]");
+      if (!cb || !cb.checked)
+        return;
+      const fileName = ((_c = (_b2 = item.querySelector(".file-name-responsive")) == null ? void 0 : _b2.textContent) == null ? void 0 : _c.trim()) || "";
+      const img = item.querySelector('img[src*="/icons/types/"]');
+      const iconSrc = (img == null ? void 0 : img.getAttribute("src")) || "";
+      const isFolder = iconSrc.includes("folder");
+      if (isFolder) {
+        selectedFolder.push({
+          isdir: true,
+          cate_id: item.getAttribute("data-file-id"),
+          parent: "",
+          folderName: fileName
+        });
+      } else {
+        selectedFile.push({
+          isdir: false,
+          sha1: "",
+          pick_code: "",
+          parent: "",
+          fileName,
+          fileSize: 0,
+          tryTimes: 0
+        });
+      }
+    });
+    return {
+      selectedFile,
+      selectedFolder
+    };
+  }
   class Pan115 {
     constructor() {
+      __publicField(this, "isNewUI");
+      this.isNewUI = isNewUI();
       this._initUi();
     }
     selectFileList() {
-      const list = document.querySelectorAll('li[rel="item"].selected');
-      return this._selectFileList(list);
+      if (this.isNewUI)
+        return selectFromNewUI();
+      return selectFromOldUI();
     }
-    _selectFileList(list) {
-      const selectedFile = [];
-      const selectedFolder = [];
-      Array.from(list).forEach((item) => {
-        const type = item.getAttribute("file_type");
-        if (type === "1") {
-          selectedFile.push({
-            isdir: false,
-            sha1: item.getAttribute("sha1"),
-            pick_code: item.getAttribute("pick_code"),
-            parent: "",
-            fileName: item.getAttribute("title"),
-            fileSize: Number(item.getAttribute("file_size")) || 0,
-            tryTimes: 0
-          });
-        }
-        if (type === "0") {
-          selectedFolder.push({
-            isdir: true,
-            cate_id: item.getAttribute("cate_id"),
-            parent: "",
-            folderName: item.getAttribute("title")
-          });
-        }
+    async fetchFolder(_folderItem) {
+      return [];
+    }
+    async _waitForElement(selector, timeoutMs = 15e3) {
+      const start = Date.now();
+      return new Promise((resolve) => {
+        const check = () => {
+          const el = document.querySelector(selector);
+          if (el)
+            return resolve(el);
+          if (Date.now() - start > timeoutMs)
+            return resolve(null);
+          requestAnimationFrame(check);
+        };
+        check();
       });
-      return {
-        selectedFile,
-        selectedFolder
-      };
     }
-    async fetchFolder(folderItem) {
-      var result = [];
-      return result;
+    async _newUIMountPoint() {
+      const ok = await this._waitForElement(".file-list-item[data-file-id]");
+      if (!ok)
+        return null;
+      if (!document.body)
+        return null;
+      const wrap = document.createElement("div");
+      wrap.id = "bdp-newui-toolbar";
+      wrap.setAttribute("style", "position:fixed;top:8px;right:170px;z-index:2147483646;display:flex;gap:6px;");
+      document.body.appendChild(wrap);
+      return wrap;
     }
     async _initUi() {
-      var select = "#js_top_panel_box";
-      let $toolWrap = document.querySelector(select);
-      while (!$toolWrap) {
-        await new Promise((r2) => setTimeout(r2, 20));
-        $toolWrap = document.querySelector(select);
+      let mountPoint = null;
+      if (this.isNewUI) {
+        mountPoint = await this._newUIMountPoint();
+      } else {
+        mountPoint = await this._waitForElement("#js_top_panel_box");
       }
-      P$1(o(App, {
-        pan115: this
-      }), $toolWrap);
+      if (mountPoint) {
+        P$1(o(App, {
+          pan115: this
+        }), mountPoint);
+      } else {
+        console.warn("[115Enhance] \u627E\u4E0D\u5230\u5DE5\u5177\u680F\u6302\u8F7D\u70B9");
+      }
     }
   }
   if (document.readyState === "loading") {

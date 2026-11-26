@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         115Enhance
 // @namespace    https://nasctl.com/
-// @version      3.0.20261126
+// @version      4.0.20261126
 // @author       fuxin052, kkHAIKE, BackZhao
 // @description  115网盘增强: 伪装115浏览器下载 + 导出到 Aria2, 支持多 aria2 实例
 // @license      MIT

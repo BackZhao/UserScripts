@@ -18,66 +18,172 @@ registerDialogShow((items) => {
     showDownloadDialog(items);
 });
 
+/** 检测是否新版 SPA 界面 (https://115.com/storage/allfiles) */
+function isNewUI(): boolean {
+    // 新版特征: 使用 .file-list-item + data-file-id 的 React SPA 结构
+    return (
+        !!document.querySelector('.file-list-item[data-file-id]') ||
+        location.pathname.includes('/storage/')
+    );
+}
+
+/** 老版界面: 从 li[rel="item"].selected 读取 */
+function selectFromOldUI(): {
+    selectedFile: FileObjType[];
+    selectedFolder: FolderObjType[];
+} {
+    const list = document.querySelectorAll('li[rel="item"].selected');
+    const selectedFile: FileObjType[] = [];
+    const selectedFolder: FolderObjType[] = [];
+    Array.from(list).forEach((item) => {
+        const type = item.getAttribute('file_type');
+        if (type === '1') {
+            selectedFile.push({
+                isdir: false,
+                sha1: item.getAttribute('sha1')!,
+                pick_code: item.getAttribute('pick_code')!,
+                parent: '',
+                fileName: item.getAttribute('title')!,
+                fileSize: Number(item.getAttribute('file_size')) || 0,
+                tryTimes: 0,
+            });
+        }
+        if (type === '0') {
+            selectedFolder.push({
+                isdir: true,
+                cate_id: item.getAttribute('cate_id')!,
+                parent: '',
+                folderName: item.getAttribute('title')!,
+            });
+        }
+    });
+    return { selectedFile, selectedFolder };
+}
+
+/**
+ * 新版界面: 从 .file-list-item[data-file-id] + checked checkbox 读取。
+ * 注意: 新版 DOM 上没有 pick_code/sha1 (在 React state 里),
+ * 所以通过工具栏按钮直接触发下载时拿不到完整参数。
+ * 完整下载路径依赖 hook.ts 劫持 browserInterface,
+ * 用户点 115 原生"下载 → 浏览器下载"时会自动触发。
+ */
+function selectFromNewUI(): {
+    selectedFile: FileObjType[];
+    selectedFolder: FolderObjType[];
+} {
+    const selectedFile: FileObjType[] = [];
+    const selectedFolder: FolderObjType[] = [];
+
+    const items = document.querySelectorAll('.file-list-item[data-file-id]');
+    items.forEach((item) => {
+        // 跳过内层嵌套的 file-list-item (两层结构)
+        if (item.parentElement?.closest('.file-list-item[data-file-id]')) return;
+
+        const cb = item.querySelector(
+            'input[type=checkbox]'
+        ) as HTMLInputElement | null;
+        if (!cb || !cb.checked) return;
+
+        const fileName =
+            item.querySelector('.file-name-responsive')?.textContent?.trim() || '';
+        const img = item.querySelector('img[src*="/icons/types/"]');
+        const iconSrc = img?.getAttribute('src') || '';
+        const isFolder = iconSrc.includes('folder');
+
+        if (isFolder) {
+            selectedFolder.push({
+                isdir: true,
+                cate_id: item.getAttribute('data-file-id')!,
+                parent: '',
+                folderName: fileName,
+            });
+        } else {
+            selectedFile.push({
+                isdir: false,
+                sha1: '',
+                pick_code: '',
+                parent: '',
+                fileName,
+                fileSize: 0,
+                tryTimes: 0,
+            });
+        }
+    });
+
+    return { selectedFile, selectedFolder };
+}
+
 /** 入口方法, 并从页面获取数据供后面使用 */
 export class Pan115 {
+    /** 当前是否新版 SPA 界面 */
+    readonly isNewUI: boolean;
+
     constructor() {
+        this.isNewUI = isNewUI();
         this._initUi();
     }
 
-    /** 获取已选择的文件 */
+    /** 获取已选择的文件 (新版/老版通用) */
     selectFileList() {
-        const list = document.querySelectorAll('li[rel="item"].selected');
-        return this._selectFileList(list);
+        if (this.isNewUI) return selectFromNewUI();
+        return selectFromOldUI();
     }
 
-    private _selectFileList(list: NodeListOf<Element>) {
-        const selectedFile: FileObjType[] = [];
-        const selectedFolder: FolderObjType[] = [];
-        Array.from(list).forEach((item) => {
-            const type = item.getAttribute('file_type');
-            // file
-            if (type === '1') {
-                selectedFile.push({
-                    isdir: false,
-                    sha1: item.getAttribute('sha1')!,
-                    pick_code: item.getAttribute('pick_code')!,
-                    parent: '',
-                    fileName: item.getAttribute('title')!,
-                    fileSize: Number(item.getAttribute('file_size')) || 0,
-                    tryTimes: 0,
-                });
-            }
-            // fold
-            if (type === '0') {
-                selectedFolder.push({
-                    isdir: true,
-                    cate_id: item.getAttribute('cate_id')!,
-                    parent: '',
-                    folderName: item.getAttribute('title')!,
-                });
-            }
+    async fetchFolder(_folderItem: FolderObjType) {
+        return [];
+    }
+
+    private async _waitForElement(
+        selector: string,
+        timeoutMs = 15000
+    ): Promise<HTMLElement | null> {
+        const start = Date.now();
+        return new Promise((resolve) => {
+            const check = () => {
+                const el = document.querySelector(selector) as HTMLElement | null;
+                if (el) return resolve(el);
+                if (Date.now() - start > timeoutMs) return resolve(null);
+                requestAnimationFrame(check);
+            };
+            check();
         });
-        return {
-            selectedFile,
-            selectedFolder,
-        };
     }
 
-    async fetchFolder(folderItem: FolderObjType) {
-        var result: any = [];
+    /** 新版: 等待页面加载后创建浮动工具栏挂载点 */
+    private async _newUIMountPoint(): Promise<HTMLElement | null> {
+        // 等待文件列表出现
+        const ok = await this._waitForElement('.file-list-item[data-file-id]');
+        if (!ok) return null;
 
-        return result;
+        // 等 body 就绪
+        if (!document.body) return null;
+
+        // 创建浮动工具栏容器
+        const wrap = document.createElement('div');
+        wrap.id = 'bdp-newui-toolbar';
+        wrap.setAttribute(
+            'style',
+            'position:fixed;top:8px;right:170px;z-index:2147483646;display:flex;gap:6px;'
+        );
+        document.body.appendChild(wrap);
+        return wrap;
     }
 
     private async _initUi() {
-        // Pan115 工具栏 UI 需要等待 115 页面 DOM 就绪 (document-start 时 DOM 还没构建好)
-        var select = '#js_top_panel_box';
-        let $toolWrap = document.querySelector(select);
-        while (!$toolWrap) {
-            await new Promise((r) => setTimeout(r, 20));
-            $toolWrap = document.querySelector(select);
+        let mountPoint: HTMLElement | null = null;
+
+        if (this.isNewUI) {
+            mountPoint = await this._newUIMountPoint();
+        } else {
+            // 老版: 等待 #js_top_panel_box
+            mountPoint = await this._waitForElement('#js_top_panel_box');
         }
-        render(<App pan115={this} />, $toolWrap);
+
+        if (mountPoint) {
+            render(<App pan115={this} />, mountPoint);
+        } else {
+            console.warn('[115Enhance] 找不到工具栏挂载点');
+        }
     }
 }
 
