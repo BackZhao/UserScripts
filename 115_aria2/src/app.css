@@ -49,56 +49,62 @@
     flex: 2 2 100%;
 }
 
-/* ===== 工具栏: 唯一的绝对定位父容器 ===== */
+/* ===== 工具栏: 固定高度, 子元素强制拉伸 ===== */
 .bdp-toolbar {
     position: absolute;
     right: 200px;
     top: 0;
     z-index: 100;
     display: inline-flex;
-    align-items: center;
+    align-items: stretch;     /* 让子元素强制撑满父容器高度, 彻底消除 select/button 自身高度计算差异 */
     gap: 6px;
+    height: 32px;
 }
 
-/* ===== 下拉 & 按钮: 统一规格 ===== */
+/* ===== 下拉 & 按钮: 统一规格 (保守写法, 不用 all:unset) ===== */
 .bdp-instance-select,
 .bdp-button {
-    /* 重置所有浏览器默认样式 */
-    all: unset;
+    display: inline-flex;
+    align-items: center;           /* 内容垂直居中 (比 line-height 更可靠, select 也生效) */
+    justify-content: center;
     box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
-    -moz-appearance: none;
-
-    /* 尺寸硬锁 */
-    width: auto;
-    height: 32px;
+    height: 100%;                  /* 撑满父容器的 32px */
     margin: 0;
-    padding: 0;
-
-    /* 文字 */
     font-size: 12px;
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-    line-height: 32px;      /* 与 height 相同 = 垂直居中 */
-    text-align: center;
-    cursor: pointer;
     border: 1px solid #dcdfe6;
     border-radius: 4px;
+    background-clip: padding-box;
+    cursor: pointer;
     transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+
+    /* 清浏览器默认的 select/button 外观 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* 清 button 特有 */
+    -webkit-user-select: none;
+    user-select: none;
+    outline: none;
 }
 
-/* 实例下拉 (select) */
+/* 实例下拉 (select 特有) */
 .bdp-instance-select {
     color: #606266;
-    background: #ffffff;
-    padding: 0 22px 0 10px;
+    background-color: #ffffff;
+    padding: 0 22px 0 10px;        /* 右侧留空间给自定义下拉箭头 */
     text-align: left;
+    justify-content: flex-start;
+    /* 自定义 SVG 下拉箭头 */
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     background-size: 10px 6px;
     min-width: 110px;
     max-width: 160px;
+    /* 清 select 特有 */
+    text-indent: 0;
+    text-overflow: ellipsis;
 }
 .bdp-instance-select:hover {
     color: #09aaff;
@@ -110,24 +116,25 @@
     background: #fff;
 }
 
-/* ARIA2 按钮 — 主按钮风格: 蓝底白字, 一眼能识别 */
+/* ARIA2 按钮 — 主按钮风格: 蓝底白字 */
 .bdp-button {
     color: #ffffff;
-    background: #09aaff;
+    background-color: #09aaff;
     border-color: #09aaff;
     padding: 0 14px;
     font-weight: 600;
     letter-spacing: 0.5px;
+    line-height: 1;                /* inline-flex + align-items:center 已经处理垂直居中, line-height 只是防文字重叠 */
 }
 .bdp-button:hover {
-    background: #0090dd;   /* 稍微深一点的蓝, 产生 hover 反馈 */
+    background-color: #0090dd;     /* 稍微深一点的蓝, 产生 hover 反馈 */
     border-color: #0090dd;
     color: #fff;
 }
 
 .bdp-button-text {
     font-size: 12px;
-    line-height: 32px;
+    line-height: 1;
     font-weight: inherit;
     letter-spacing: inherit;
 }
